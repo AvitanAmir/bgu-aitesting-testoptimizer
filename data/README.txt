@@ -1,0 +1,1 @@
+data folder holds all the needed data for the project.
