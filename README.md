@@ -6,18 +6,16 @@ Each test have component with failure probability.
 
 General Entropy -
 
-Ps - probability of success.
-Pf - probability of failure.
-Es - entropy of success.
-Pf - entropy of failure.
+Ps - probability of success. calculated by multiplication of component success ( 1 - component failure).
+Pf - probability of failure. 1 - Ps.
+Es - entropy of success: use analyzer code to obtain component new probability given success state.
+Pf - entropy of failure: use analyzer code to obtain component new probability given failure state.
 
 Algorithm:
 
-on each round find the min on each test.
+Given X as the max amount of tests.
 
-Ps * Es + Pf * Ef
-
-use analyzer code to obtain component new probability given state.
+on each round find the min on each test Ps * Es + Pf * Ef.
 
 perform the test.
 
