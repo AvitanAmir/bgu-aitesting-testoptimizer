@@ -1,5 +1,3 @@
-
-
 class Component(object):
 
     def __init__(self, name, failure_prob):
@@ -8,6 +6,9 @@ class Component(object):
 
     def get_failure_probability(self):
         return self._failure_prob
+
+    def set_failure_probability(self,failure_prob):
+        self._failure_prob = failure_prob
 
     def get_success_probability(self):
         return 1 - self.get_failure_probability()

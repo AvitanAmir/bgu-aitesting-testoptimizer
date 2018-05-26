@@ -31,7 +31,7 @@ def main():
 
     for test in test_comp_dict:
         test_dict[test] = models.Test(test_comp_dict[test])
-        print(test,test_dict[test].get_failure_probability(),operations.calculate_failure_probability(test_dict[test]))
+        #print(test,test_dict[test].get_failure_probability(),operations.calculate_failure_probability(test_dict[test]))
 
     for index, row in test_outcomes_df.iterrows():
         #print(row['TestName'], row['TestOutcome'])
@@ -40,7 +40,8 @@ def main():
         else:
             test_outcomes_dict[row['TestName']] = row['TestOutcome']
 
-
+    #t = operations.get_test_with_max_failure_probability(test_dict)
+    #print(t)
 
 if __name__ == "__main__":
     main()
