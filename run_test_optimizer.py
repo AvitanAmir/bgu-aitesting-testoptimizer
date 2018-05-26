@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import models
+import operations
 
 def main():
     component_probabilities_df = pd.read_csv('data/ComponentProbabilities.csv')
@@ -30,7 +31,7 @@ def main():
 
     for test in test_comp_dict:
         test_dict[test] = models.Test(test_comp_dict[test])
-        print(test,test_dict[test].get_failure_probability())
+        print(test,test_dict[test].get_failure_probability(),operations.calculate_failure_probability(test_dict[test]))
 
     for index, row in test_outcomes_df.iterrows():
         #print(row['TestName'], row['TestOutcome'])
