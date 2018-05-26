@@ -42,6 +42,7 @@ def main():
 
     #t = operations.get_test_with_max_failure_probability(test_dict)
     #print(t)
+    #print(operations.get_tests_count(test_dict))
 
 if __name__ == "__main__":
     main()
