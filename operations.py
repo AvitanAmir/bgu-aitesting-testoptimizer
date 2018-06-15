@@ -21,11 +21,13 @@ def calculate_failure_probability(test):
     return test.get_failure_probability()
 
 def calculate_success_entropy(test):
-    return
+    # TODO make call to analyzer
+    return test.get_success_entropy()
 
-def calculate_failure_entropy(test):
-    return
+def get_fail_entropy(test):
+    # TODO make call to analyzer
+    return test.get_fail_entropy()
 
 def calculate_test_entropy(test):
-    return calculate_success_probability(test) * calculate_success_entropy(test) + calculate_failure_probability(test) * calculate_failure_entropy(test)
+    return calculate_success_probability(test) * calculate_success_entropy(test) + calculate_failure_probability(test) * get_fail_entropy(test)
 

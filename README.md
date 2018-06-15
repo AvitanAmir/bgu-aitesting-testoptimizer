@@ -20,3 +20,23 @@ on each round find the min on each test Ps * Es + Pf * Ef.
 perform the test.
 
 do for others until X tests selected.
+
+
+
+Analyzer input file example:
+
+[Description]
+bla bla bla
+[Components names]
+[(0,'a'),(1,'b'),(2,'c'),(3,'d')]
+[Priors]
+[0.1,0.1,0.1,0.1]
+[Bugs]
+[0]
+[InitialTests]
+['T1','T2','T3','T4']
+[TestDetails]
+T1;[0,2,3];1
+T2;[2];1
+T3;[0,1,2];1
+T4;[0,1,3];0

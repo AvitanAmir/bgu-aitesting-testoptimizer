@@ -1,8 +1,13 @@
+from scipy.stats import entropy
+
 class Component(object):
 
     def __init__(self, name, failure_prob):
         self._name = name
         self._failure_prob = failure_prob
+
+    def get_name(self):
+        return self._name
 
     def get_failure_probability(self):
         return self._failure_prob
@@ -28,3 +33,17 @@ class Test(object):
             prob *= component.get_success_probability()
 
         return prob
+
+    def get_success_entropy(self):
+        probs = []
+        for component in self._components:
+            probs.append(component.get_success_probability())
+
+        return entropy(probs)
+
+    def get_fail_entropy(self):
+        probs = []
+        for component in self._components:
+            probs.append(1 - component.get_success_probability())
+
+        return entropy(probs)
