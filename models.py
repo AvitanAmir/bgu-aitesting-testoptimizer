@@ -20,8 +20,15 @@ class Component(object):
 
 class Test(object):
 
-    def __init__(self, components):
+    def __init__(self, name, components):
+        self._name = name
         self._components = components
+
+    def get_name(self):
+        return self._name
+
+    def get_components(self):
+        return self._components
 
     def get_failure_probability(self):
         return 1 - self.get_success_probability()

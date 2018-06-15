@@ -7,19 +7,23 @@ class DiagnoserClient(object):
     def __init__(self):
         pass
 
-    def write_analyzer_input_file(self, tests, components_dictionary):
-        components_array = []
+    def write_analyzer_input_file(self, tests, components_array, test_true_outcomes_dictionary):
+        '''
+        Output to file an input for the diagnoser from the given data.
+        :param tests:
+        :param components_array:
+        :param test_true_outcomes_dictionary:
+        :return:
+        '''
         components_rev = {}
 
         index=0
 
-        for component in components_dictionary.values():
-            components_array.append(component)
+        for component in components_array:
             components_rev[component.get_name()] = index
             index+=1
 
         file = open('diagnose_input', 'w')
-
 
         file.write('[Description]\n')
         file.write('some description\n')
@@ -45,6 +49,21 @@ class DiagnoserClient(object):
         file.write('['+line+']\n')
 
         file.write('[TestDetails]\n')
+        for index in range(len(tests)):
+            test = tests[index]
+            line = ''
+            line+='\'T'+str(index)+'\';['
+            test_components = test.get_components()
+            for index2 in range(len(test_components)):
+                line += str(components_rev[test_components[index2].get_name()])+','
+            line = line[:-1]
+            test_name = test.get_name()
+            # seems to be missing actual outcomes in the data, default to pass (1)
+            if test_name in test_true_outcomes_dictionary:
+                line+='];'+('1' if test_true_outcomes_dictionary[test_name] else '0')
+            else:
+                line+='];1'
+            file.write(line+'\n')
 
         file.close()
 
@@ -113,7 +132,7 @@ class Optimizer(object):
 
         print(tests_by_information_gain)
 
-        diagnoser_client.write_analyzer_input_file(self._tests_dictionary.values(), self._components_dictionary)
+        diagnoser_client.write_analyzer_input_file(list(self._tests_dictionary.values()), list(self._components_dictionary.values()), self._test_true_outcomes_dictionary)
 
 
 
@@ -143,7 +162,7 @@ def main():
             test_comp_dict[row['TestName']].append(comp_dict[row['ComponentName']])
 
     for test in test_comp_dict:
-        test_dict[test] = models.Test(test_comp_dict[test])
+        test_dict[test] = models.Test(test, test_comp_dict[test])
         #print(test,test_dict[test].get_failure_probability(),operations.calculate_failure_probability(test_dict[test]))
 
     for index, row in test_outcomes_df.iterrows():
