@@ -20,14 +20,14 @@ def calculate_success_probability(test):
 def calculate_failure_probability(test):
     return test.get_failure_probability()
 
-def calculate_success_entropy(test):
+def calculate_success_entropy(test, performed_tests, tests_true_outcomes_dictionary, diagnoser_client):
     # TODO make call to analyzer
     return test.get_success_entropy()
 
-def get_fail_entropy(test):
+def get_fail_entropy(test, performed_tests, tests_true_outcomes_dictionary, diagnoser_client):
     # TODO make call to analyzer
     return test.get_fail_entropy()
 
-def calculate_test_entropy(test):
-    return calculate_success_probability(test) * calculate_success_entropy(test) + calculate_failure_probability(test) * get_fail_entropy(test)
+def calculate_test_entropy(test, performed_tests, tests_true_outcomes_dictionary, diagnoser_client):
+    return calculate_success_probability(test) * calculate_success_entropy(test, performed_tests, tests_true_outcomes_dictionary, diagnoser_client) + calculate_failure_probability(test) * get_fail_entropy(test, performed_tests, tests_true_outcomes_dictionary, diagnoser_client)
 

@@ -4,10 +4,13 @@ import operations
 from scipy.stats import entropy
 
 class DiagnoserClient(object):
+    '''
+    A client API to perform actions with the diagnoser.
+    '''
     def __init__(self):
         pass
 
-    def write_analyzer_input_file(self, tests, components_array, test_true_outcomes_dictionary):
+    def write_analyzer_input_file(self, tests, components_array, test_true_outcomes_dictionary, file_name = 'diagnoser_input'):
         '''
         Output to file an input for the diagnoser from the given data.
         :param tests:
@@ -23,14 +26,14 @@ class DiagnoserClient(object):
             components_rev[component.get_name()] = index
             index+=1
 
-        file = open('diagnose_input', 'w')
+        file = open(file_name, 'w')
 
         file.write('[Description]\n')
         file.write('some description\n')
         file.write('[Components names]\n')
         line=''
         for index in range(len(components_array)):
-            line+='('+str(index)+',\''+str(components_array[index].get_name())+'\'),'
+            line += '('+str(index)+',\''+str(components_array[index].get_name())+'\'),'
 
         line = line[:-1]
         file.write('['+line+']\n')
@@ -54,8 +57,8 @@ class DiagnoserClient(object):
             line = ''
             line+='\'T'+str(index)+'\';['
             test_components = test.get_components()
-            for index2 in range(len(test_components)):
-                line += str(components_rev[test_components[index2].get_name()])+','
+            for components_index in range(len(test_components)):
+                line += str(components_rev[test_components[components_index].get_name()])+','
             line = line[:-1]
             test_name = test.get_name()
             # seems to be missing actual outcomes in the data, default to pass (1)
@@ -90,13 +93,20 @@ class Optimizer(object):
             probs.append(component.get_success_probability())
         return entropy(probs)
 
-    def calculate_test_entropy(self, test):
+    def calculate_test_entropy(self, test, performed_tests, diagnoser_client):
         '''
         calculate a specific test entropy as defined in the test 'calculate_test_entropy' method.
         :param test:
         :return: test entropy
         '''
-        return operations.calculate_test_entropy(test)
+
+        tests_true_outcomes_dictionary = {}
+
+        for test in performed_tests:
+            test_name = test.get_name()
+            tests_true_outcomes_dictionary[test_name] = self._test_true_outcomes_dictionary[test_name]
+
+        return operations.calculate_test_entropy(test, performed_tests, tests_true_outcomes_dictionary, diagnoser_client)
 
     def find_best_tests(self):
         '''
@@ -120,7 +130,7 @@ class Optimizer(object):
             selected_key = ''
             for key in tests_buffer.keys():
                 test = tests_buffer[key]
-                current_information_gain = general_entropy - self.calculate_test_entropy(test)
+                current_information_gain = general_entropy - self.calculate_test_entropy(test, tests_by_information_gain, diagnoser_client)
                 if current_information_gain > current_best_information_gain:
                     current_best_information_gain = current_information_gain
                     current_best_test = test
@@ -130,11 +140,8 @@ class Optimizer(object):
             tests_buffer.pop(selected_key)
             # TODO need to "perform" the test and set it result in the next calls to analyzer.
 
-        print(tests_by_information_gain)
-
+        # TODO remove this call, debug for now only.
         diagnoser_client.write_analyzer_input_file(list(self._tests_dictionary.values()), list(self._components_dictionary.values()), self._test_true_outcomes_dictionary)
-
-
 
 def main():
     component_probabilities_df = pd.read_csv('data/ComponentProbabilities.csv')
