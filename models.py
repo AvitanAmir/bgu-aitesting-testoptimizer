@@ -2,9 +2,10 @@ from scipy.stats import entropy
 
 class Component(object):
 
-    def __init__(self, name, failure_prob):
+    def __init__(self, comp_id,name, failure_prob):
         self._name = name
         self._failure_prob = failure_prob
+        self.comp_id = comp_id
 
     def get_name(self):
         return self._name

@@ -2,7 +2,9 @@ import pandas as pd
 import models
 import operations
 from scipy.stats import entropy
-
+from sfl_diagnoser.Diagnoser.diagnoserUtils import readPlanningFile
+from sfl_diagnoser.Diagnoser.Diagnosis_Results import Diagnosis_Results
+import sfl_diagnoser.Diagnoser.ExperimentInstance
 
 class DiagnoserClient(object):
     '''
@@ -22,7 +24,7 @@ class DiagnoserClient(object):
 
         return new_priors_dictionary
 
-    def write_analyzer_input_file(self, tests, components_array, test_true_outcomes_dictionary,
+    def write_analyzer_input_file(self, tests, components_array, test_true_outcomes_dictionary,bugged_test_dict,
                                   file_name='diagnoser_input'):
         '''
         Output to file an input for the diagnoser from the given data.
@@ -45,15 +47,24 @@ class DiagnoserClient(object):
         file.write('some description\n')
         file.write('[Components names]\n')
         line = ''
+        bugs = ''
+        priors =''
         for index in range(len(components_array)):
             line += '(' + str(index) + ',\'' + str(components_array[index].get_name()) + '\'),'
+            priors+=str(components_array[index].get_failure_probability())+','
+            if str(components_array[index].get_name()) in bugged_test_dict:
+                bugs+=str(index)+','
 
         line = line[:-1]
         file.write('[' + line + ']\n')
 
-        # TODO what is this
+        file.write('[Priors]\n')
+        priors = priors[:-1]
+        file.write('[' + priors + ']\n')
+
         file.write('[Bugs]\n')
-        file.write('[0]\n')
+        bugs = bugs[:-1]
+        file.write('['+bugs+']\n')
 
         file.write('[InitialTests]\n')
 
@@ -89,11 +100,12 @@ class Optimizer(object):
         Optimizer class responsible of finding best sub group of tests that will yield the most bug count.
     '''
 
-    def __init__(self, components_dictionary, test_true_outcomes_dictionary, tests_dictionary, max_tests_amount=5):
+    def __init__(self, components_dictionary, test_true_outcomes_dictionary, tests_dictionary,bugged_test_dict, max_tests_amount=5):
         self._test_true_outcomes_dictionary = test_true_outcomes_dictionary
         self._tests_dictionary = tests_dictionary
         self._max_tests_amount = max_tests_amount
         self._components_dictionary = components_dictionary
+        self._bugged_test_dict = bugged_test_dict
 
     def calculate_general_entropy(self):
         '''
@@ -117,7 +129,8 @@ class Optimizer(object):
 
         for test in performed_tests:
             test_name = test.get_name()
-            performed_tests_true_outcomes_dictionary[test_name] = self._test_true_outcomes_dictionary[test_name]
+            if test_name in self._test_true_outcomes_dictionary:
+                performed_tests_true_outcomes_dictionary[test_name] = self._test_true_outcomes_dictionary[test_name]
 
         return operations.calculate_test_entropy(test, performed_tests, performed_tests_true_outcomes_dictionary,
                                                  diagnoser_client)
@@ -159,24 +172,27 @@ class Optimizer(object):
         # TODO remove this call, debug for now only.
         diagnoser_client.write_analyzer_input_file(list(self._tests_dictionary.values()),
                                                    list(self._components_dictionary.values()),
-                                                   self._test_true_outcomes_dictionary)
+                                                   self._test_true_outcomes_dictionary,
+                                                   self._bugged_test_dict)
 
 
 def main():
     component_probabilities_df = pd.read_csv('data/ComponentProbabilities.csv')
     test_components_df = pd.read_csv('data/TestComponents.csv')
     test_outcomes_df = pd.read_csv('data/TestOutcomes.csv')
+    bugged_components_df = pd.read_csv('data/BuggedFiles.csv')
     comp_dict = {}
     test_comp_dict = {}
     test_dict = {}
     test_outcomes_dict = {}
+    bugged_test_dict = {}
 
     for index, row in component_probabilities_df.iterrows():
-        # print(row['ComponentName'], row['FaultProbability'])
         if row['ComponentName'] in comp_dict.keys():
             pass
         else:
-            comp_dict[row['ComponentName']] = models.Component(row['ComponentName'], row['FaultProbability'])
+            #print(index,row['ComponentName'], row['FaultProbability'])
+            comp_dict[row['ComponentName']] = models.Component(index,row['ComponentName'], row['FaultProbability'])
 
     for index, row in test_components_df.iterrows():
         # print(row['TestName'], row['ComponentName'])
@@ -194,7 +210,12 @@ def main():
         # print(row['TestName'], row['TestOutcome'])
         test_outcomes_dict[row['TestName']] = row['TestOutcome'] == 1
 
-    optimizer = Optimizer(comp_dict, test_outcomes_dict, test_dict)
+    for index, row in bugged_components_df.iterrows():
+        bugged_test_dict[row['name']] = 1
+
+
+
+    optimizer = Optimizer(comp_dict, test_outcomes_dict, test_dict,bugged_test_dict)
 
     optimizer.find_best_tests()
 
