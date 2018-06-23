@@ -1,6 +1,8 @@
 import pandas as pd
 import models
 import operations
+import numpy
+import copy
 from scipy.stats import entropy
 from sfl_diagnoser.Diagnoser.diagnoserUtils import readPlanningFile
 from sfl_diagnoser.Diagnoser.Diagnosis_Results import Diagnosis_Results
@@ -84,24 +86,67 @@ class DiagnoserClient(object):
 
         file.close()
 
-    def get_updates_priors(self, test, state, tests, test_true_outcomes_dictionary):
+    def get_updates_priors(self, test, state, tests, test_true_outcomes_dictionary,tests_bugged_components_dictionary):
         new_priors_dictionary = {}
+        union_tests = {}
+        union_components = {}
+        union_bugged_components = {}
+        union_test_true_outcomes ={}
+
+
+        for t in tests:
+            if t.get_name() in union_tests:
+                pass
+            else:
+                union_tests[t.get_name()] = t
+                if t.get_name() in test_true_outcomes_dictionary:
+                    union_test_true_outcomes[t.get_name()] = test_true_outcomes_dictionary[t.get_name()]
+                for comp in t.get_components():
+                    if comp.get_name() in union_components:
+                        pass
+                    else:
+                        union_components[comp.get_name()] = comp
+
+        if test.get_name() in union_components:
+            pass
+        else:
+            union_tests[ test.get_name()] = test
+            if test.get_name() in test_true_outcomes_dictionary:
+                union_test_true_outcomes[test.get_name()] = state
+            for c in test.get_components():
+                if c.get_name() in union_components:
+                    pass
+                else:
+                    union_components[c.get_name()] = c
+
+
+        for comp in union_components:
+            if comp in tests_bugged_components_dictionary:
+                if comp in  union_bugged_components:
+                    pass
+                else:
+                    union_bugged_components[comp] = comp
+
+        for c in union_components:
+            if c in tests_bugged_components_dictionary:
+                union_bugged_components[c] =tests_bugged_components_dictionary[c]
+
+
+        self.write_analyzer_input_file(union_tests.values(), union_components.values(), union_test_true_outcomes,union_bugged_components)
 
 
         # TODO use diagestor to get new priors given a state of the current test and previous tests.
 
-        inst = readPlanningFile(r"diagnoser_input")
-        inst.diagnose()
-        result = Diagnosis_Results(inst.diagnoses, inst.initial_tests, inst.error)
-        result.get_metrics_names()
-        result.get_metrics_values()
+        #inst = readPlanningFile(r"diagnoser_input")
+        #inst.diagnose()
+        #result = Diagnosis_Results(inst.diagnoses, inst.initial_tests, inst.error)
+        #result.get_metrics_names()
+        #result.get_metrics_values()
         #ei = sfl_diagnoser.Diagnoser.ExperimentInstance.addTests(inst, inst.hp_next())
-
         for component in test.get_components():
             new_priors_dictionary[component.get_name()] = component.get_failure_probability()
 
         return new_priors_dictionary
-
 
 
 class Optimizer(object):
@@ -109,12 +154,12 @@ class Optimizer(object):
         Optimizer class responsible of finding best sub group of tests that will yield the most bug count.
     '''
 
-    def __init__(self, components_dictionary, test_true_outcomes_dictionary, tests_dictionary,bugged_test_dict, max_tests_amount=5):
+    def __init__(self, components_dictionary, test_true_outcomes_dictionary, tests_dictionary,bugged_components_dict, max_tests_amount=5):
         self._test_true_outcomes_dictionary = test_true_outcomes_dictionary
         self._tests_dictionary = tests_dictionary
         self._max_tests_amount = max_tests_amount
         self._components_dictionary = components_dictionary
-        self._bugged_test_dict = bugged_test_dict
+        self._bugged_components_dict = bugged_components_dict
 
     def calculate_general_entropy(self):
         '''
@@ -135,13 +180,21 @@ class Optimizer(object):
         '''
 
         performed_tests_true_outcomes_dictionary = {}
+        performed_tests_bugged_components_dictionary = {}
 
-        for test in performed_tests:
-            test_name = test.get_name()
+        for t in performed_tests:
+            test_name = t.get_name()
             if test_name in self._test_true_outcomes_dictionary:
                 performed_tests_true_outcomes_dictionary[test_name] = self._test_true_outcomes_dictionary[test_name]
+            for comp in t.get_components():
+                if comp.get_name() in self._bugged_components_dict:
+                    performed_tests_bugged_components_dictionary[comp.get_name()] = self._bugged_components_dict[comp.get_name()]
 
-        return operations.calculate_test_entropy(test, performed_tests, performed_tests_true_outcomes_dictionary,
+        for comp in test.get_components():
+            if comp.get_name() in self._bugged_components_dict:
+                performed_tests_bugged_components_dictionary[comp.get_name()] = self._bugged_components_dict[comp.get_name()]
+
+        return operations.calculate_test_entropy(test, performed_tests, performed_tests_true_outcomes_dictionary,performed_tests_bugged_components_dictionary,
                                                  diagnoser_client)
 
     def find_best_tests(self):
@@ -168,6 +221,7 @@ class Optimizer(object):
                 test = tests_buffer[key]
                 current_information_gain = general_entropy - self.calculate_test_entropy(test,
                                                                                          tests_by_information_gain,
+
                                                                                          diagnoser_client)
                 if current_information_gain > current_best_information_gain:
                     current_best_information_gain = current_information_gain
@@ -176,13 +230,12 @@ class Optimizer(object):
 
             tests_by_information_gain.append(current_best_test)
             tests_buffer.pop(selected_key)
-            # TODO need to "perform" the test and set it result in the next calls to analyzer.
 
         # TODO remove this call, debug for now only.
-        diagnoser_client.write_analyzer_input_file(list(self._tests_dictionary.values()),
-                                                   list(self._components_dictionary.values()),
-                                                   self._test_true_outcomes_dictionary,
-                                                   self._bugged_test_dict)
+        #diagnoser_client.write_analyzer_input_file(list(self._tests_dictionary.values()),
+        #                                           list(self._components_dictionary.values()),
+        #                                           self._test_true_outcomes_dictionary,
+        #                                           self._bugged_test_dict)
 
 
 def main():
@@ -194,7 +247,7 @@ def main():
     test_comp_dict = {}
     test_dict = {}
     test_outcomes_dict = {}
-    bugged_test_dict = {}
+    bugged_components_dict = {}
 
     for index, row in component_probabilities_df.iterrows():
         if row['ComponentName'] in comp_dict.keys():
@@ -212,7 +265,10 @@ def main():
             test_comp_dict[row['TestName']].append(comp_dict[row['ComponentName']])
 
     for test in test_comp_dict:
-        test_dict[test] = models.Test(test, test_comp_dict[test])
+            if str(test)=='nan':
+                pass
+            else:
+                test_dict[test] = models.Test(test, test_comp_dict[test])
         # print(test,test_dict[test].get_failure_probability(),operations.calculate_failure_probability(test_dict[test]))
 
     for index, row in test_outcomes_df.iterrows():
@@ -220,11 +276,17 @@ def main():
         test_outcomes_dict[row['TestName']] = row['TestOutcome'] == 1
 
     for index, row in bugged_components_df.iterrows():
-        bugged_test_dict[row['name']] = 1
+        bugged_components_dict[row['name']] = 1
 
 
 
-    optimizer = Optimizer(comp_dict, test_outcomes_dict, test_dict,bugged_test_dict)
+    '''inst = readPlanningFile(r"diagnoser_input")
+    inst.diagnose()
+    result = Diagnosis_Results(inst.diagnoses, inst.initial_tests, inst.error)
+    result.get_metrics_names()
+    result.get_metrics_values()
+    ei = sfl_diagnoser.Diagnoser.ExperimentInstance.addTests(inst, inst.hp_next())'''
+    optimizer = Optimizer(comp_dict, test_outcomes_dict, test_dict,bugged_components_dict)
 
     optimizer.find_best_tests()
 

@@ -22,19 +22,19 @@ def calculate_success_probability(test):
 def calculate_failure_probability(test):
     return test.get_failure_probability()
 
-def calculate_success_entropy(test, performed_tests, tests_true_outcomes_dictionary, diagnoser_client):
+def calculate_success_entropy(test, performed_tests, tests_true_outcomes_dictionary,performed_tests_bugged_components_dictionary, diagnoser_client):
 
-    new_priors_dictionary = diagnoser_client.get_updates_priors(test, 1, performed_tests, tests_true_outcomes_dictionary)
-
-    return entropy(list(new_priors_dictionary.values()))
-
-def get_fail_entropy(test, performed_tests, tests_true_outcomes_dictionary, diagnoser_client):
-
-    new_priors_dictionary = diagnoser_client.get_updates_priors(test, 0, performed_tests, tests_true_outcomes_dictionary)
+    new_priors_dictionary = diagnoser_client.get_updates_priors(test, 1, performed_tests, tests_true_outcomes_dictionary,performed_tests_bugged_components_dictionary)
 
     return entropy(list(new_priors_dictionary.values()))
 
-def calculate_test_entropy(test, performed_tests, tests_true_outcomes_dictionary, diagnoser_client):
+def get_fail_entropy(test, performed_tests, tests_true_outcomes_dictionary,performed_tests_bugged_components_dictionary, diagnoser_client):
+
+    new_priors_dictionary = diagnoser_client.get_updates_priors(test, 0, performed_tests, tests_true_outcomes_dictionary,performed_tests_bugged_components_dictionary)
+
+    return entropy(list(new_priors_dictionary.values()))
+
+def calculate_test_entropy(test, performed_tests, tests_true_outcomes_dictionary,performed_tests_bugged_components_dictionary, diagnoser_client):
     '''
     Given a test, diagnoser client and so far performed test data, calculate to test entropy
     :param test:
@@ -43,5 +43,5 @@ def calculate_test_entropy(test, performed_tests, tests_true_outcomes_dictionary
     :param diagnoser_client:
     :return:
     '''
-    return calculate_success_probability(test) * calculate_success_entropy(test, performed_tests, tests_true_outcomes_dictionary, diagnoser_client) + calculate_failure_probability(test) * get_fail_entropy(test, performed_tests, tests_true_outcomes_dictionary, diagnoser_client)
+    return calculate_success_probability(test) * calculate_success_entropy(test, performed_tests, tests_true_outcomes_dictionary,performed_tests_bugged_components_dictionary, diagnoser_client) + calculate_failure_probability(test) * get_fail_entropy(test, performed_tests, tests_true_outcomes_dictionary,performed_tests_bugged_components_dictionary,diagnoser_client)
 
