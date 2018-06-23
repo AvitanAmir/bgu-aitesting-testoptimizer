@@ -14,17 +14,7 @@ class DiagnoserClient(object):
     def __init__(self):
         pass
 
-    def get_updates_priors(self, test, state, tests, test_true_outcomes_dictionary):
-        new_priors_dictionary = {}
-
-        # TODO use diagestor to get new priors given a state of the current test and previous tests.
-
-        for component in test.get_components():
-            new_priors_dictionary[component.get_name()] = component.get_failure_probability()
-
-        return new_priors_dictionary
-
-    def write_analyzer_input_file(self, tests, components_array, test_true_outcomes_dictionary,bugged_test_dict,
+    def write_analyzer_input_file(self, tests, components_array, test_true_outcomes_dictionary, bugged_test_dict,
                                   file_name='diagnoser_input'):
         '''
         Output to file an input for the diagnoser from the given data.
@@ -48,12 +38,12 @@ class DiagnoserClient(object):
         file.write('[Components names]\n')
         line = ''
         bugs = ''
-        priors =''
+        priors = ''
         for index in range(len(components_array)):
             line += '(' + str(index) + ',\'' + str(components_array[index].get_name()) + '\'),'
-            priors+=str(components_array[index].get_failure_probability())+','
+            priors += str(components_array[index].get_failure_probability()) + ','
             if str(components_array[index].get_name()) in bugged_test_dict:
-                bugs+=str(index)+','
+                bugs += str(index) + ','
 
         line = line[:-1]
         file.write('[' + line + ']\n')
@@ -64,7 +54,7 @@ class DiagnoserClient(object):
 
         file.write('[Bugs]\n')
         bugs = bugs[:-1]
-        file.write('['+bugs+']\n')
+        file.write('[' + bugs + ']\n')
 
         file.write('[InitialTests]\n')
 
@@ -79,7 +69,7 @@ class DiagnoserClient(object):
         for index in range(len(tests)):
             test = tests[index]
             line = ''
-            line += '\'T' + str(index) + '\';['
+            line += 'T' + str(index) + ';['
             test_components = test.get_components()
             for components_index in range(len(test_components)):
                 line += str(components_rev[test_components[components_index].get_name()]) + ','
@@ -93,6 +83,25 @@ class DiagnoserClient(object):
             file.write(line + '\n')
 
         file.close()
+
+    def get_updates_priors(self, test, state, tests, test_true_outcomes_dictionary):
+        new_priors_dictionary = {}
+
+
+        # TODO use diagestor to get new priors given a state of the current test and previous tests.
+
+        inst = readPlanningFile(r"diagnoser_input")
+        inst.diagnose()
+        result = Diagnosis_Results(inst.diagnoses, inst.initial_tests, inst.error)
+        result.get_metrics_names()
+        result.get_metrics_values()
+        #ei = sfl_diagnoser.Diagnoser.ExperimentInstance.addTests(inst, inst.hp_next())
+
+        for component in test.get_components():
+            new_priors_dictionary[component.get_name()] = component.get_failure_probability()
+
+        return new_priors_dictionary
+
 
 
 class Optimizer(object):
