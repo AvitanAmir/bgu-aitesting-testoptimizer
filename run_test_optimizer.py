@@ -221,8 +221,8 @@ class Optimizer(object):
                 test = tests_buffer[key]
                 current_information_gain = general_entropy - self.calculate_test_entropy(test,
                                                                                          tests_by_information_gain,
-
                                                                                          diagnoser_client)
+                #print('Test: ',key,' general_entropy: ',general_entropy,' information_gain: ',current_information_gain)
                 if current_information_gain > current_best_information_gain:
                     current_best_information_gain = current_information_gain
                     current_best_test = test
@@ -230,6 +230,7 @@ class Optimizer(object):
 
             tests_by_information_gain.append(current_best_test)
             tests_buffer.pop(selected_key)
+            #print(tests_by_information_gain)
 
         # TODO remove this call, debug for now only.
         #diagnoser_client.write_analyzer_input_file(list(self._tests_dictionary.values()),
