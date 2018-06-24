@@ -135,16 +135,27 @@ class DiagnoserClient(object):
         self.write_analyzer_input_file(union_tests.values(), union_components.values(), union_test_true_outcomes,union_bugged_components)
 
 
-        # TODO use diagestor to get new priors given a state of the current test and previous tests.
+        # Use diagestor to get new priors given a state of the current test and previous tests.
+        inst = readPlanningFile(r"diagnoser_input")
+        inst.diagnose()
+        results = Diagnosis_Results(inst.diagnoses, inst.initial_tests, inst.error)
+        comp_prob = results.get_components_probabilities()
 
-        #inst = readPlanningFile(r"diagnoser_input")
-        #inst.diagnose()
-        #result = Diagnosis_Results(inst.diagnoses, inst.initial_tests, inst.error)
-        #result.get_metrics_names()
-        #result.get_metrics_values()
-        #ei = sfl_diagnoser.Diagnoser.ExperimentInstance.addTests(inst, inst.hp_next())
+        file = open("diagnoser_input", "r")
+        comp_new_priors = file.readlines()[3]
+        comp_new_priors_tup_arr = comp_new_priors[1:-1].replace("),",")),").split("),")
+        comp_new_priors_dict = {}
+        for tup in comp_new_priors_tup_arr:
+            t= tup[1:-1].split(",")
+            comp_new_priors_dict[t[1][1:-1]] = int(t[0])
+
+
         for component in test.get_components():
-            new_priors_dictionary[component.get_name()] = component.get_failure_probability()
+            if component.get_name() in comp_new_priors_dict:
+                i = comp_new_priors_dict[component.get_name()]
+                for p in comp_prob:
+                    if p[0] == i:
+                        new_priors_dictionary[component.get_name()] = p[1]
 
         return new_priors_dictionary
 
