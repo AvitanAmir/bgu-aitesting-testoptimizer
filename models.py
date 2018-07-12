@@ -31,6 +31,12 @@ class Test(object):
     def get_components(self):
         return self._components
 
+    def get_components_failure_probability(self):
+        comp_dict = {}
+        for component in self._components:
+            comp_dict[component.get_name()] = component.get_failure_probability()
+        return comp_dict
+
     def get_failure_probability(self):
         return 1 - self.get_success_probability()
 

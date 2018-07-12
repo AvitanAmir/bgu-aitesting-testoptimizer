@@ -79,7 +79,7 @@ class DiagnoserClient(object):
             test_name = test.get_name()
             # seems to be missing actual outcomes in the data, default to pass (1)
             if test_name in test_true_outcomes_dictionary:
-                line += '];' + ('1' if test_true_outcomes_dictionary[test_name] else '0')
+                line += '];' + ('1' if test_true_outcomes_dictionary[test_name]==1 else '0')
             else:
                 line += '];1'
             file.write(line + '\n')
@@ -88,11 +88,17 @@ class DiagnoserClient(object):
 
     def get_updates_priors(self, test, state, tests, test_true_outcomes_dictionary,tests_bugged_components_dictionary):
         new_priors_dictionary = {}
+        comp_prob_dict = {}
         union_tests = {}
         union_components = {}
         union_bugged_components = {}
         union_test_true_outcomes ={}
 
+        #Test True outcome
+        if state ==-1 and test_true_outcomes_dictionary[test.get_name()]==1:
+            state = 1
+        elif state == -1 and test_true_outcomes_dictionary[test.get_name()]==0:
+            state = 0
 
         for t in tests:
             if t.get_name() in union_tests:
@@ -127,9 +133,6 @@ class DiagnoserClient(object):
                 else:
                     union_bugged_components[comp] = comp
 
-        for c in union_components:
-            if c in tests_bugged_components_dictionary:
-                union_bugged_components[c] =tests_bugged_components_dictionary[c]
 
 
         self.write_analyzer_input_file(union_tests.values(), union_components.values(), union_test_true_outcomes,union_bugged_components)
@@ -143,19 +146,23 @@ class DiagnoserClient(object):
 
         file = open("diagnoser_input", "r")
         comp_new_priors = file.readlines()[3]
-        comp_new_priors_tup_arr = comp_new_priors[1:-1].replace("),",")),").split("),")
+        comp_new_priors_tup_arr = comp_new_priors[1:-2].replace("),",")),").split("),")
         comp_new_priors_dict = {}
         for tup in comp_new_priors_tup_arr:
             t= tup[1:-1].split(",")
             comp_new_priors_dict[t[1][1:-1]] = int(t[0])
 
 
+        for p in comp_prob:
+            comp_prob_dict[p[0]]=p[1]
+
         for component in test.get_components():
             if component.get_name() in comp_new_priors_dict:
                 i = comp_new_priors_dict[component.get_name()]
-                for p in comp_prob:
-                    if p[0] == i:
-                        new_priors_dictionary[component.get_name()] = p[1]
+                if i in comp_prob_dict:
+                    new_priors_dictionary[component.get_name()] = comp_prob_dict[i]
+
+        #print(new_priors_dictionary)
 
         return new_priors_dictionary
 
@@ -172,6 +179,11 @@ class Optimizer(object):
         self._components_dictionary = components_dictionary
         self._bugged_components_dict = bugged_components_dict
 
+    def update_components_dictionary(self,post_prob_test_run_dict):
+        for c in self._components_dictionary:
+            if c in post_prob_test_run_dict:
+                self._components_dictionary[c].set_failure_probability(post_prob_test_run_dict[c])
+
     def calculate_general_entropy(self):
         '''
         calculate the general entropy of all components.
@@ -181,6 +193,7 @@ class Optimizer(object):
         probs = []
         for component in self._components_dictionary.values():
             probs.append(component.get_success_probability())
+            #probs.append(component.get_failure_probability())
         return entropy(probs)
 
     def calculate_test_entropy(self, test, performed_tests, diagnoser_client):
@@ -240,8 +253,17 @@ class Optimizer(object):
                     selected_key = key
 
             tests_by_information_gain.append(current_best_test)
+
+            #Actual run of the selected test with real test state outcome
+            print('Test #:',round ,' Test: ',selected_key,' true outcome: ',self._test_true_outcomes_dictionary[selected_key])
+            print(selected_key, tests_buffer[selected_key].get_components_failure_probability())
+            post_prob_test_run_dict =  diagnoser_client.get_updates_priors(tests_buffer[selected_key], -1, {}, self._test_true_outcomes_dictionary,
+                                                self._bugged_components_dict)
+            print(selected_key, post_prob_test_run_dict)
+            self.update_components_dictionary(post_prob_test_run_dict)
+
             tests_buffer.pop(selected_key)
-            #print(tests_by_information_gain)
+
 
         # TODO remove this call, debug for now only.
         #diagnoser_client.write_analyzer_input_file(list(self._tests_dictionary.values()),

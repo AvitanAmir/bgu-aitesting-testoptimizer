@@ -84,3 +84,4 @@ fileID,name
 1192,src\tests\junit\org\apache\tools\ant\taskdefs\optional\junit\XMLResultAggregatorTest.java
 1057,src\tests\junit\org\apache\tools\ant\taskdefs\optional\TraXLiaisonTest.java
 1149,src\tests\junit\org\apache\tools\ant\util\LineOrientedOutputStreamTest.java
+-1,src\main\org\apache\tools\ant\taskdefs\ImportTask.java'
