@@ -79,64 +79,38 @@ class DiagnoserClient(object):
             test_name = test.get_name()
             # seems to be missing actual outcomes in the data, default to pass (1)
             if test_name in test_true_outcomes_dictionary:
-                line += '];' + ('1' if test_true_outcomes_dictionary[test_name]==1 else '0')
+                line += '];' + str(test_true_outcomes_dictionary[test_name])
             else:
                 line += '];1'
-            file.write(line + '\n')
+            file.write(line)
+            file.write('\n')
 
         file.close()
 
-    def get_updates_priors(self, test, state, tests, test_true_outcomes_dictionary,tests_bugged_components_dictionary):
+    def get_updates_priors(self, test, state, tests, test_true_outcomes_dictionary, tests_bugged_components_dictionary):
         new_priors_dictionary = {}
         comp_prob_dict = {}
         union_tests = {}
         union_components = {}
         union_bugged_components = {}
-        union_test_true_outcomes ={}
+        union_test_true_outcomes = {}
 
-        #Test True outcome
-        if state ==-1 and test_true_outcomes_dictionary[test.get_name()]==1:
-            state = 1
-        elif state == -1 and test_true_outcomes_dictionary[test.get_name()]==0:
-            state = 0
+        union_tests[test.get_name()] = test
+        union_test_true_outcomes[test.get_name()] = state
+        for comp in test.get_components():
+            union_components[comp.get_name()] = comp
 
         for t in tests:
-            if t.get_name() in union_tests:
-                pass
-            else:
-                union_tests[t.get_name()] = t
-                if t.get_name() in test_true_outcomes_dictionary:
-                    union_test_true_outcomes[t.get_name()] = test_true_outcomes_dictionary[t.get_name()]
-                for comp in t.get_components():
-                    if comp.get_name() in union_components:
-                        pass
-                    else:
-                        union_components[comp.get_name()] = comp
-
-        if test.get_name() in union_components:
-            pass
-        else:
-            union_tests[ test.get_name()] = test
-            if test.get_name() in test_true_outcomes_dictionary:
-                union_test_true_outcomes[test.get_name()] = state
-            for c in test.get_components():
-                if c.get_name() in union_components:
-                    pass
-                else:
-                    union_components[c.get_name()] = c
-
+            union_tests[t.get_name()] = t
+            union_test_true_outcomes[t.get_name()] = 1 if test_true_outcomes_dictionary[t.get_name()] else 0
+            for comp in t.get_components():
+                union_components[comp.get_name()] = comp
 
         for comp in union_components:
             if comp in tests_bugged_components_dictionary:
-                if comp in  union_bugged_components:
-                    pass
-                else:
-                    union_bugged_components[comp] = comp
+                union_bugged_components[comp] = comp
 
-
-
-        self.write_analyzer_input_file(union_tests.values(), union_components.values(), union_test_true_outcomes,union_bugged_components)
-
+        self.write_analyzer_input_file(union_tests.values(), union_components.values(), union_test_true_outcomes, union_bugged_components)
 
         # Use diagestor to get new priors given a state of the current test and previous tests.
         inst = readPlanningFile(r"diagnoser_input")
@@ -152,17 +126,14 @@ class DiagnoserClient(object):
             t= tup[1:-1].split(",")
             comp_new_priors_dict[t[1][1:-1]] = int(t[0])
 
-
         for p in comp_prob:
-            comp_prob_dict[p[0]]=p[1]
+            comp_prob_dict[p[0]] = p[1]
 
         for component in test.get_components():
             if component.get_name() in comp_new_priors_dict:
-                i = comp_new_priors_dict[component.get_name()]
-                if i in comp_prob_dict:
-                    new_priors_dictionary[component.get_name()] = comp_prob_dict[i]
-
-        #print(new_priors_dictionary)
+                comp = comp_new_priors_dict[component.get_name()]
+                if comp in comp_prob_dict:
+                    new_priors_dictionary[component.get_name()] = comp_prob_dict[comp]
 
         return new_priors_dictionary
 
@@ -252,13 +223,24 @@ class Optimizer(object):
                     current_best_test = test
                     selected_key = key
 
-            tests_by_information_gain.append(current_best_test)
 
             #Actual run of the selected test with real test state outcome
-            print('Test #:',round ,' Test: ',selected_key,' true outcome: ',self._test_true_outcomes_dictionary[selected_key])
-            print(selected_key, tests_buffer[selected_key].get_components_failure_probability())
-            post_prob_test_run_dict =  diagnoser_client.get_updates_priors(tests_buffer[selected_key], -1, {}, self._test_true_outcomes_dictionary,
+
+            print('Round #:', round, ' Test: ', selected_key, ' true outcome: ', self._test_true_outcomes_dictionary[selected_key])
+
+            print(selected_key, current_best_test.get_components_failure_probability())
+
+
+            # post_prob_test_run_dict =  diagnoser_client.get_updates_priors(tests_buffer[selected_key], -1, {}, self._test_true_outcomes_dictionary,
+            #                                     self._bugged_components_dict)
+            # print(selected_key, post_prob_test_run_dict)
+            # self.update_components_dictionary(post_prob_test_run_dict)
+
+            t_outcome = 1 if self._test_true_outcomes_dictionary[selected_key] else 0
+
+            post_prob_test_run_dict =  diagnoser_client.get_updates_priors(current_best_test, t_outcome, tests_by_information_gain, self._test_true_outcomes_dictionary,
                                                 self._bugged_components_dict)
+            tests_by_information_gain.append(current_best_test)
             print(selected_key, post_prob_test_run_dict)
             self.update_components_dictionary(post_prob_test_run_dict)
 
@@ -329,3 +311,89 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
+#
+#
+# def get_updates_priors_old(self, test, state, tests, test_true_outcomes_dictionary, tests_bugged_components_dictionary):
+#     new_priors_dictionary = {}
+#     comp_prob_dict = {}
+#     union_tests = {}
+#     union_components = {}
+#     union_bugged_components = {}
+#     union_test_true_outcomes ={}
+#
+#     #Test True outcome
+#     if state ==-1 and test_true_outcomes_dictionary[test.get_name()]==1:
+#         state = 1
+#     elif state == -1 and test_true_outcomes_dictionary[test.get_name()]==0:
+#         state = 0
+#
+#     for t in tests:
+#         if t.get_name() in union_tests:
+#             pass
+#         else:
+#             union_tests[t.get_name()] = t
+#             if t.get_name() in test_true_outcomes_dictionary:
+#                 union_test_true_outcomes[t.get_name()] = test_true_outcomes_dictionary[t.get_name()]
+#             for comp in t.get_components():
+#                 if comp.get_name() in union_components:
+#                     pass
+#                 else:
+#                     union_components[comp.get_name()] = comp
+#
+#     if test.get_name() in union_components:
+#         pass
+#     else:
+#         union_tests[ test.get_name()] = test
+#         if test.get_name() in test_true_outcomes_dictionary:
+#             union_test_true_outcomes[test.get_name()] = state
+#         for c in test.get_components():
+#             if c.get_name() in union_components:
+#                 pass
+#             else:
+#                 union_components[c.get_name()] = c
+#
+#
+#     for comp in union_components:
+#         if comp in tests_bugged_components_dictionary:
+#             if comp in  union_bugged_components:
+#                 pass
+#             else:
+#                 union_bugged_components[comp] = comp
+#
+#
+#
+#     self.write_analyzer_input_file(union_tests.values(), union_components.values(), union_test_true_outcomes,union_bugged_components)
+#
+#
+#     # Use diagestor to get new priors given a state of the current test and previous tests.
+#     inst = readPlanningFile(r"diagnoser_input")
+#     inst.diagnose()
+#     results = Diagnosis_Results(inst.diagnoses, inst.initial_tests, inst.error)
+#     comp_prob = results.get_components_probabilities()
+#
+#     file = open("diagnoser_input", "r")
+#     comp_new_priors = file.readlines()[3]
+#     comp_new_priors_tup_arr = comp_new_priors[1:-2].replace("),",")),").split("),")
+#     comp_new_priors_dict = {}
+#     for tup in comp_new_priors_tup_arr:
+#         t= tup[1:-1].split(",")
+#         comp_new_priors_dict[t[1][1:-1]] = int(t[0])
+#
+#
+#     for p in comp_prob:
+#         comp_prob_dict[p[0]]=p[1]
+#
+#     for component in test.get_components():
+#         if component.get_name() in comp_new_priors_dict:
+#             i = comp_new_priors_dict[component.get_name()]
+#             if i in comp_prob_dict:
+#                 new_priors_dictionary[component.get_name()] = comp_prob_dict[i]
+#
+#     #print(new_priors_dictionary)
+#
+#     return new_priors_dictionary
