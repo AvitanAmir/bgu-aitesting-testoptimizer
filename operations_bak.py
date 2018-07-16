@@ -22,41 +22,26 @@ def calculate_success_probability(test):
 def calculate_failure_probability(test):
     return test.get_failure_probability()
 
-def calculate_success_entropy(test, performed_tests, tests_true_outcomes_dictionary,performed_tests_bugged_components_dictionary, diagnoser_client,comp_dict):
+def calculate_success_entropy(test, performed_tests, tests_true_outcomes_dictionary,performed_tests_bugged_components_dictionary, diagnoser_client):
 
     new_priors_dictionary = diagnoser_client.get_updates_priors(test, 1, performed_tests, tests_true_outcomes_dictionary, performed_tests_bugged_components_dictionary)
 
-    comp_prob = []
-    for c in comp_dict:
-        if c in new_priors_dictionary:
-            comp_prob.append(new_priors_dictionary[c])
-        else:
-            comp_prob.append(comp_dict[c].get_failure_probability())
-
-    e = entropy(list(comp_prob))
+    e = entropy(list(new_priors_dictionary.values()))
 
     return e
 
-def get_fail_entropy(test, performed_tests, tests_true_outcomes_dictionary,performed_tests_bugged_components_dictionary, diagnoser_client,comp_dict):
+def get_fail_entropy(test, performed_tests, tests_true_outcomes_dictionary,performed_tests_bugged_components_dictionary, diagnoser_client):
 
     try:
         new_priors_dictionary = diagnoser_client.get_updates_priors(test, 0, performed_tests, tests_true_outcomes_dictionary, performed_tests_bugged_components_dictionary)
     except:
         new_priors_dictionary = diagnoser_client.get_updates_priors(test, 1, performed_tests, tests_true_outcomes_dictionary, performed_tests_bugged_components_dictionary)
 
-    comp_prob =[]
-    for c in comp_dict:
-        if c in new_priors_dictionary:
-            comp_prob.append(new_priors_dictionary[c])
-        else:
-            comp_prob.append(comp_dict[c].get_failure_probability())
-
-
-    e = entropy(list(comp_prob))
+    e = entropy(list(new_priors_dictionary.values()))
 
     return e
 
-def calculate_test_entropy(test, performed_tests, tests_true_outcomes_dictionary,performed_tests_bugged_components_dictionary, diagnoser_client,comp_dict):
+def calculate_test_entropy(test, performed_tests, tests_true_outcomes_dictionary,performed_tests_bugged_components_dictionary, diagnoser_client):
     '''
     Given a test, diagnoser client and so far performed test data, calculate to test entropy
     :param test:
@@ -68,11 +53,11 @@ def calculate_test_entropy(test, performed_tests, tests_true_outcomes_dictionary
 
     success_prob = calculate_success_probability(test)
 
-    success_entropy = calculate_success_entropy(test, performed_tests, tests_true_outcomes_dictionary, performed_tests_bugged_components_dictionary, diagnoser_client,comp_dict)
+    success_entropy = calculate_success_entropy(test, performed_tests, tests_true_outcomes_dictionary, performed_tests_bugged_components_dictionary, diagnoser_client)
 
     failure_prob = calculate_failure_probability(test)
 
-    failure_entropy = get_fail_entropy(test, performed_tests, tests_true_outcomes_dictionary, performed_tests_bugged_components_dictionary, diagnoser_client,comp_dict)
+    failure_entropy = get_fail_entropy(test, performed_tests, tests_true_outcomes_dictionary, performed_tests_bugged_components_dictionary, diagnoser_client)
 
     test_entropy = success_prob * success_entropy + failure_prob * failure_entropy
 

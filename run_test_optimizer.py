@@ -135,6 +135,7 @@ class DiagnoserClient(object):
                 if comp in comp_prob_dict:
                     new_priors_dictionary[component.get_name()] = comp_prob_dict[comp]
 
+
         return new_priors_dictionary
 
 
@@ -190,7 +191,7 @@ class Optimizer(object):
                 performed_tests_bugged_components_dictionary[comp.get_name()] = self._bugged_components_dict[comp.get_name()]
 
         return operations.calculate_test_entropy(test, performed_tests, performed_tests_true_outcomes_dictionary,performed_tests_bugged_components_dictionary,
-                                                 diagnoser_client)
+                                                 diagnoser_client,self._components_dictionary)
 
     def find_best_tests(self):
         '''
@@ -236,7 +237,11 @@ class Optimizer(object):
             # print(selected_key, post_prob_test_run_dict)
             # self.update_components_dictionary(post_prob_test_run_dict)
 
-            t_outcome = 1 if self._test_true_outcomes_dictionary[selected_key] else 0
+
+            #TODO: unmark this statement
+            #t_outcome = 1 if self._test_true_outcomes_dictionary[selected_key] else 0
+
+            t_outcome = 1
 
             post_prob_test_run_dict =  diagnoser_client.get_updates_priors(current_best_test, t_outcome, tests_by_information_gain, self._test_true_outcomes_dictionary,
                                                 self._bugged_components_dict)
@@ -259,6 +264,13 @@ def main():
     test_outcomes_dict = {}
     bugged_components_dict = {}
 
+    for index, row in test_outcomes_df.iterrows():
+        # print(row['TestName'], row['TestOutcome'])
+        test_outcomes_dict[row['TestName']] = row['TestOutcome'] == 1
+
+    for index, row in bugged_components_df.iterrows():
+        bugged_components_dict[row['name']] = 1
+
     for index, row in component_probabilities_df.iterrows():
         if row['ComponentName'] in comp_dict.keys():
             pass
@@ -275,18 +287,12 @@ def main():
             test_comp_dict[row['TestName']].append(comp_dict[row['ComponentName']])
 
     for test in test_comp_dict:
-            if str(test)=='nan':
+            if str(test)=='nan' or test not in test_outcomes_dict:
                 pass
             else:
                 test_dict[test] = models.Test(test, test_comp_dict[test])
         # print(test,test_dict[test].get_failure_probability(),operations.calculate_failure_probability(test_dict[test]))
 
-    for index, row in test_outcomes_df.iterrows():
-        # print(row['TestName'], row['TestOutcome'])
-        test_outcomes_dict[row['TestName']] = row['TestOutcome'] == 1
-
-    for index, row in bugged_components_df.iterrows():
-        bugged_components_dict[row['name']] = 1
 
 
 
@@ -296,9 +302,16 @@ def main():
     result.get_metrics_names()
     result.get_metrics_values()
     ei = sfl_diagnoser.Diagnoser.ExperimentInstance.addTests(inst, inst.hp_next())'''
-    optimizer = Optimizer(comp_dict, test_outcomes_dict, test_dict,bugged_components_dict)
+    max_tests_amount = 15
+    #optimizer = Optimizer(comp_dict, test_outcomes_dict, test_dict,bugged_components_dict,max_tests_amount)
+    #optimizer.find_best_tests()
 
-    optimizer.find_best_tests()
+    ignore_tests = []
+    for round in range(1, max_tests_amount + 1):
+        test_tup = operations.get_test_with_max_failure_probability(test_dict,ignore_tests,test_outcomes_dict)
+        ignore_tests.append(test_tup[0])
+        if test_tup[0] in test_outcomes_dict:
+            print(test_tup[0],test_tup[1],test_outcomes_dict[test_tup[0]])
 
     print('All done')
 

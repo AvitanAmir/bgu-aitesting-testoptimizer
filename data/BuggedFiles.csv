@@ -84,4 +84,16 @@ fileID,name
 1192,src\tests\junit\org\apache\tools\ant\taskdefs\optional\junit\XMLResultAggregatorTest.java
 1057,src\tests\junit\org\apache\tools\ant\taskdefs\optional\TraXLiaisonTest.java
 1149,src\tests\junit\org\apache\tools\ant\util\LineOrientedOutputStreamTest.java
--1,src\main\org\apache\tools\ant\taskdefs\ImportTask.java'
+-1,src\main\org\apache\tools\ant\ProjectComponent.java
+-2,src\main\org\apache\tools\ant\Project.java
+-3,src\main\org\apache\tools\ant\property\LocalProperties.java
+-4,src\main\org\apache\tools\ant\util\ReflectUtil.java
+-5,src\main\org\apache\tools\ant\Project.java
+-6,src\main\org\apache\tools\ant\property\LocalProperties.java
+-7,src\main\org\apache\tools\ant\util\ReflectUtil.java
+-8,src\main\org\apache\tools\ant\types\resources\URLResource.java
+-9,src\main\org\apache\tools\ant\taskdefs\Antlib.java
+
+
+
+
