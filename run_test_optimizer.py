@@ -247,12 +247,6 @@ class Optimizer(object):
             tests_buffer.pop(selected_key)
 
 
-        # TODO remove this call, debug for now only.
-        #diagnoser_client.write_analyzer_input_file(list(self._tests_dictionary.values()),
-        #                                           list(self._components_dictionary.values()),
-        #                                           self._test_true_outcomes_dictionary,
-        #                                           self._bugged_test_dict)
-
 
 def main():
     component_probabilities_df = pd.read_csv('data/ComponentProbabilities.csv')

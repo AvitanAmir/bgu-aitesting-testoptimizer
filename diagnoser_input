@@ -1,16 +1,15 @@
 [Description]
 some description
 [Components names]
-[(0,'src\main\org\apache\tools\ant\types\resources\FileResource.java'),(1,'src\main\org\apache\tools\ant\PropertyHelper.java'),(2,'src\main\org\apache\tools\ant\ProjectComponent.java'),(3,'src\main\org\apache\tools\ant\types\FilterSetCollection.java'),(4,'src\main\org\apache\tools\ant\property\LocalProperties.java'),(5,'src\main\org\apache\tools\ant\util\ReflectUtil.java'),(6,'src\main\org\apache\tools\ant\types\ResourceLocation.java'),(7,'src\tests\junit\org\apache\tools\ant\BuildFileTest.java'),(8,'src\main\org\apache\tools\ant\util\JAXPUtils.java'),(9,'src\tests\junit\org\apache\tools\ant\taskdefs\condition\EqualsTest.java'),(10,'src\tests\junit\org\apache\tools\ant\taskdefs\condition\ContainsTest.java'),(11,'src\main\org\apache\tools\ant\BuildEvent.java'),(12,'src\main\org\apache\tools\ant\launch\Locator.java'),(13,'src\main\org\apache\tools\ant\Project.java'),(14,'src\main\org\apache\tools\ant\types\resources\FailFast.java'),(15,'src\main\org\apache\tools\ant\taskdefs\condition\Equals.java'),(16,'src\main\org\apache\tools\ant\types\resources\FileResourceIterator.java'),(17,'src\main\org\apache\tools\ant\property\LocalPropertyStack.java'),(18,'src\main\org\apache\tools\ant\util\FileUtils.java'),(19,'src\main\org\apache\tools\ant\AntClassLoader.java'),(20,'src\tests\junit\org\apache\tools\ant\taskdefs\optional\unix\SymlinkTest.java'),(21,'src\main\org\apache\tools\ant\PathTokenizer.java'),(22,'src\main\org\apache\tools\ant\util\JavaEnvUtils.java'),(23,'src\tests\junit\org\apache\tools\ant\types\XMLCatalogTest.java'),(24,'src\main\org\apache\tools\ant\taskdefs\condition\Contains.java'),(25,'src\main\org\apache\tools\ant\util\VectorSet.java'),(26,'src\main\org\apache\tools\ant\types\DataType.java'),(27,'src\main\org\apache\tools\ant\types\XMLCatalog.java'),(28,'src\tests\junit\org\apache\tools\ant\types\ResourceOutputTest.java'),(29,'src\main\org\apache\tools\ant\types\Path.java'),(30,'src\main\org\apache\tools\ant\types\resources\BaseResourceCollectionContainer.java'),(31,'src\main\org\apache\tools\ant\taskdefs\condition\Os.java'),(32,'src\main\org\apache\tools\ant\types\resources\Union.java'),(33,'src\main\org\apache\tools\ant\types\Resource.java')]
+[(0,'src\main\org\apache\tools\ant\taskdefs\condition\Equals.java'),(1,'src\tests\junit\org\apache\tools\ant\taskdefs\condition\EqualsTest.java'),(2,'src\main\org\apache\tools\ant\ProjectComponent.java'),(3,'src\main\org\apache\tools\ant\types\FilterSetCollection.java'),(4,'src\main\org\apache\tools\ant\taskdefs\condition\Contains.java'),(5,'src\tests\junit\org\apache\tools\ant\taskdefs\optional\unix\SymlinkTest.java'),(6,'src\tests\junit\org\apache\tools\ant\util\ReaderInputStreamTest.java'),(7,'src\tests\junit\org\apache\tools\ant\taskdefs\condition\ContainsTest.java')]
 [Priors]
-[0.506,0.578,0.006,0.0,0.029,0.106,0.0,1.0,0.006,0.0,0.0,0.006,0.5,0.782,0.0,1.0,0.002,0.016,0.844,0.769,1.0,0.0,0.392,0.0,1.0,0.243,0.014,0.031,0.0,0.27,0.014,0.113,0.003,0.03]
+[1.0,0.0,0.006,0.0,1.0,1.0,0.0,0.0]
 [Bugs]
-[12,18,19]
+[]
 [InitialTests]
-['T0','T1','T2','T3','T4']
+['T0','T1','T2','T3']
 [TestDetails]
-T0;[10,24];1
-T1;[3,0,1,2,13,4,5,6,8,11,12,14,16,17,18,19,21,22,23,25,26,27,29,30,31,32];1
-T2;[15,9];1
-T3;[7,26,1,2,13,28,11,33];1
-T4;[20];1
+T0;[7,4];1
+T1;[2,3,6];0
+T2;[0,1];1
+T3;[5];1
