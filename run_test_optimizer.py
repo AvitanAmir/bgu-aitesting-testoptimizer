@@ -164,8 +164,8 @@ class Optimizer(object):
         # TODO is it the claculation?
         probs = []
         for component in self._components_dictionary.values():
-            probs.append(component.get_success_probability())
-            #probs.append(component.get_failure_probability())
+            #probs.append(component.get_success_probability())
+            probs.append(component.get_failure_probability())
         return entropy(probs)
 
     def calculate_test_entropy(self, test, performed_tests, diagnoser_client):
@@ -231,13 +231,6 @@ class Optimizer(object):
 
             print(selected_key, current_best_test.get_components_failure_probability())
 
-
-            # post_prob_test_run_dict =  diagnoser_client.get_updates_priors(tests_buffer[selected_key], -1, {}, self._test_true_outcomes_dictionary,
-            #                                     self._bugged_components_dict)
-            # print(selected_key, post_prob_test_run_dict)
-            # self.update_components_dictionary(post_prob_test_run_dict)
-
-
             #TODO: unmark this statement
             #t_outcome = 1 if self._test_true_outcomes_dictionary[selected_key] else 0
 
@@ -250,6 +243,8 @@ class Optimizer(object):
             self.update_components_dictionary(post_prob_test_run_dict)
 
             tests_buffer.pop(selected_key)
+
+            general_entropy = self.calculate_general_entropy()
 
 
 
@@ -303,8 +298,8 @@ def main():
     result.get_metrics_values()
     ei = sfl_diagnoser.Diagnoser.ExperimentInstance.addTests(inst, inst.hp_next())'''
     max_tests_amount = 15
-    #optimizer = Optimizer(comp_dict, test_outcomes_dict, test_dict,bugged_components_dict,max_tests_amount)
-    #optimizer.find_best_tests()
+    optimizer = Optimizer(comp_dict, test_outcomes_dict, test_dict,bugged_components_dict,max_tests_amount)
+    optimizer.find_best_tests()
 
     ignore_tests = []
     for round in range(1, max_tests_amount + 1):
