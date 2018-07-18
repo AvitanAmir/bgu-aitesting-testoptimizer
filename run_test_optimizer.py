@@ -79,9 +79,13 @@ class DiagnoserClient(object):
             test_name = test.get_name()
             # seems to be missing actual outcomes in the data, default to pass (1)
             if test_name in test_true_outcomes_dictionary:
-                line += '];' + str(test_true_outcomes_dictionary[test_name])
+                if test_true_outcomes_dictionary[test_name]==1:
+                    t_real_outcome = 1
+                else:
+                    t_real_outcome = 0
+                line += '];' + str(t_real_outcome)
             else:
-                line += '];1'
+                line += '];0'
             file.write(line)
             file.write('\n')
 
@@ -95,16 +99,16 @@ class DiagnoserClient(object):
         union_bugged_components = {}
         union_test_true_outcomes = {}
 
+        for t in tests:
+            union_tests[t.get_name()] = t
+            union_test_true_outcomes[t.get_name()] = 0 if test_true_outcomes_dictionary[t.get_name()] else 1
+            for comp in t.get_components():
+                union_components[comp.get_name()] = comp
+
         union_tests[test.get_name()] = test
         union_test_true_outcomes[test.get_name()] = state
         for comp in test.get_components():
             union_components[comp.get_name()] = comp
-
-        for t in tests:
-            union_tests[t.get_name()] = t
-            union_test_true_outcomes[t.get_name()] = 1 if test_true_outcomes_dictionary[t.get_name()] else 0
-            for comp in t.get_components():
-                union_components[comp.get_name()] = comp
 
         for comp in union_components:
             if comp in tests_bugged_components_dictionary:
@@ -134,7 +138,6 @@ class DiagnoserClient(object):
                 comp = comp_new_priors_dict[component.get_name()]
                 if comp in comp_prob_dict:
                     new_priors_dictionary[component.get_name()] = comp_prob_dict[comp]
-
 
         return new_priors_dictionary
 
@@ -206,7 +209,7 @@ class Optimizer(object):
             tests_buffer[key] = self._tests_dictionary[key]
 
         tests_by_information_gain = []
-
+        tests_IG = []
         general_entropy = self.calculate_general_entropy()
 
         for round in range(1, rounds + 1):
@@ -232,20 +235,22 @@ class Optimizer(object):
             print(selected_key, current_best_test.get_components_failure_probability())
 
             #TODO: unmark this statement
-            #t_outcome = 1 if self._test_true_outcomes_dictionary[selected_key] else 0
+            t_outcome = 0 if self._test_true_outcomes_dictionary[selected_key] else 1
 
-            t_outcome = 1
+            #t_outcome = 1
+
 
             post_prob_test_run_dict =  diagnoser_client.get_updates_priors(current_best_test, t_outcome, tests_by_information_gain, self._test_true_outcomes_dictionary,
                                                 self._bugged_components_dict)
             tests_by_information_gain.append(current_best_test)
+            tests_IG.append(selected_key)
+
             print(selected_key, post_prob_test_run_dict)
             self.update_components_dictionary(post_prob_test_run_dict)
 
             tests_buffer.pop(selected_key)
-
+            print("tests_by_information_gain: ", tests_IG)
             general_entropy = self.calculate_general_entropy()
-
 
 
 def main():
@@ -289,14 +294,6 @@ def main():
         # print(test,test_dict[test].get_failure_probability(),operations.calculate_failure_probability(test_dict[test]))
 
 
-
-
-    '''inst = readPlanningFile(r"diagnoser_input")
-    inst.diagnose()
-    result = Diagnosis_Results(inst.diagnoses, inst.initial_tests, inst.error)
-    result.get_metrics_names()
-    result.get_metrics_values()
-    ei = sfl_diagnoser.Diagnoser.ExperimentInstance.addTests(inst, inst.hp_next())'''
     max_tests_amount = 15
     optimizer = Optimizer(comp_dict, test_outcomes_dict, test_dict,bugged_components_dict,max_tests_amount)
     optimizer.find_best_tests()
@@ -307,6 +304,9 @@ def main():
         ignore_tests.append(test_tup[0])
         if test_tup[0] in test_outcomes_dict:
             print(test_tup[0],test_tup[1],test_outcomes_dict[test_tup[0]])
+
+    #print('Tests failure probability:')
+    #operations.get_tests_failure_probability(test_dict,test_outcomes_dict)
 
     print('All done')
 
