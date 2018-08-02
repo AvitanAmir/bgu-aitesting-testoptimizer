@@ -1,0 +1,210 @@
+Round #: 1 Selected Test: org.apache.tools.ant.taskdefs.ConcatTest@test3 outcome: True
+ -- General Entropy: 5.328005003800128
+ -- Best IG: 0.3415431451418476
+ -- Till now fail found: False
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3']
+
+Round #: 2 Selected Test: org.apache.tools.ant.taskdefs.ManifestTest@test6 outcome: False
+ -- General Entropy: 5.328005003800128
+ -- Best IG: 0.15121488716085185
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6']
+
+Round #: 3 Selected Test: org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact outcome: True
+ -- General Entropy: 4.612680688743271
+ -- Best IG: 0.9301715409447837
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact']
+
+Round #: 4 Selected Test: org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged outcome: True
+ -- General Entropy: 4.040459676648915
+ -- Best IG: 1.190767877687068
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged']
+
+Round #: 5 Selected Test: org.apache.tools.ant.AntClassLoaderTest@testGetPackage outcome: False
+ -- General Entropy: 2.409874766903526
+ -- Best IG: 0.21226363125687753
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage']
+
+Round #: 6 Selected Test: org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins outcome: True
+ -- General Entropy: 2.052745624049501
+ -- Best IG: 0.053467058689492974
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins']
+
+Round #: 7 Selected Test: org.apache.tools.ant.taskdefs.WarTest@testLibRefs outcome: False
+ -- General Entropy: 2.2950661574059796
+ -- Best IG: 0.1256149011814407
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs']
+
+Round #: 8 Selected Test: org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir outcome: False
+ -- General Entropy: 2.2201017952320314
+ -- Best IG: 0.7718783629362975
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir']
+
+Round #: 9 Selected Test: org.apache.tools.ant.types.AssertionsTest@testReferences outcome: True
+ -- General Entropy: 1.4408775777585578
+ -- Best IG: 0.24851027658288993
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences']
+
+Round #: 10 Selected Test: org.apache.tools.ant.taskdefs.InitializeClassTest@testAll outcome: False
+ -- General Entropy: 1.243988572803666
+ -- Best IG: 0.19165886403652066
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll']
+
+Round #: 11 Selected Test: org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary outcome: False
+ -- General Entropy: 1.042661265687343
+ -- Best IG: 0.14350145515894985
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary']
+
+Round #: 12 Selected Test: org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath outcome: False
+ -- General Entropy: 0.8986904796653492
+ -- Best IG: 0.1039801019501232
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary', 'org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath']
+
+Round #: 13 Selected Test: org.apache.tools.ant.taskdefs.optional.PropertyFileTest@testExerciseDefaultAndIncrement outcome: False
+ -- General Entropy: 0.7914832778996307
+ -- Best IG: 0.07799672356515297
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary', 'org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath', 'org.apache.tools.ant.taskdefs.optional.PropertyFileTest@testExerciseDefaultAndIncrement']
+
+Round #: 14 Selected Test: org.apache.tools.ant.taskdefs.ParallelTest@testFail outcome: True
+ -- General Entropy: 0.7116097464356188
+ -- Best IG: 0.059007078512633426
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary', 'org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath', 'org.apache.tools.ant.taskdefs.optional.PropertyFileTest@testExerciseDefaultAndIncrement', 'org.apache.tools.ant.taskdefs.ParallelTest@testFail']
+
+Round #: 15 Selected Test: org.apache.tools.ant.DefaultLoggerTest@testThrowableMessage outcome: True
+ -- General Entropy: 0.6633333530911646
+ -- Best IG: 0.051414754115581274
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary', 'org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath', 'org.apache.tools.ant.taskdefs.optional.PropertyFileTest@testExerciseDefaultAndIncrement', 'org.apache.tools.ant.taskdefs.ParallelTest@testFail', 'org.apache.tools.ant.DefaultLoggerTest@testThrowableMessage']
+
+Round #: 16 Selected Test: org.apache.tools.ant.taskdefs.ConcatTest@test2 outcome: True
+ -- General Entropy: 0.6214887591064675
+ -- Best IG: 0.045098773361439415
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary', 'org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath', 'org.apache.tools.ant.taskdefs.optional.PropertyFileTest@testExerciseDefaultAndIncrement', 'org.apache.tools.ant.taskdefs.ParallelTest@testFail', 'org.apache.tools.ant.DefaultLoggerTest@testThrowableMessage', 'org.apache.tools.ant.taskdefs.ConcatTest@test2']
+
+Round #: 17 Selected Test: org.apache.tools.ant.taskdefs.GetTest@test1 outcome: True
+ -- General Entropy: 0.5848519774558294
+ -- Best IG: 0.040376769242396304
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary', 'org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath', 'org.apache.tools.ant.taskdefs.optional.PropertyFileTest@testExerciseDefaultAndIncrement', 'org.apache.tools.ant.taskdefs.ParallelTest@testFail', 'org.apache.tools.ant.DefaultLoggerTest@testThrowableMessage', 'org.apache.tools.ant.taskdefs.ConcatTest@test2', 'org.apache.tools.ant.taskdefs.GetTest@test1']
+
+Round #: 18 Selected Test: org.apache.tools.ant.taskdefs.DeleteTest@test1 outcome: True
+ -- General Entropy: 0.5524932518161518
+ -- Best IG: 0.0363766572673192
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary', 'org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath', 'org.apache.tools.ant.taskdefs.optional.PropertyFileTest@testExerciseDefaultAndIncrement', 'org.apache.tools.ant.taskdefs.ParallelTest@testFail', 'org.apache.tools.ant.DefaultLoggerTest@testThrowableMessage', 'org.apache.tools.ant.taskdefs.ConcatTest@test2', 'org.apache.tools.ant.taskdefs.GetTest@test1', 'org.apache.tools.ant.taskdefs.DeleteTest@test1']
+
+Round #: 19 Selected Test: org.apache.tools.ant.taskdefs.ConcatTest@testConcatNoNewlineEncoding outcome: False
+ -- General Entropy: 0.523693302925003
+ -- Best IG: 0.03287345517266704
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary', 'org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath', 'org.apache.tools.ant.taskdefs.optional.PropertyFileTest@testExerciseDefaultAndIncrement', 'org.apache.tools.ant.taskdefs.ParallelTest@testFail', 'org.apache.tools.ant.DefaultLoggerTest@testThrowableMessage', 'org.apache.tools.ant.taskdefs.ConcatTest@test2', 'org.apache.tools.ant.taskdefs.GetTest@test1', 'org.apache.tools.ant.taskdefs.DeleteTest@test1', 'org.apache.tools.ant.taskdefs.ConcatTest@testConcatNoNewlineEncoding']
+
+Round #: 20 Selected Test: org.apache.tools.ant.taskdefs.UntarTest@testEncoding outcome: True
+ -- General Entropy: 0.4903790616115038
+ -- Best IG: 0.02921757962216326
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary', 'org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath', 'org.apache.tools.ant.taskdefs.optional.PropertyFileTest@testExerciseDefaultAndIncrement', 'org.apache.tools.ant.taskdefs.ParallelTest@testFail', 'org.apache.tools.ant.DefaultLoggerTest@testThrowableMessage', 'org.apache.tools.ant.taskdefs.ConcatTest@test2', 'org.apache.tools.ant.taskdefs.GetTest@test1', 'org.apache.tools.ant.taskdefs.DeleteTest@test1', 'org.apache.tools.ant.taskdefs.ConcatTest@testConcatNoNewlineEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testEncoding']
+
+Round #: 21 Selected Test: org.apache.tools.ant.taskdefs.UntarTest@testSrcDirTest outcome: True
+ -- General Entropy: 0.46783355894767986
+ -- Best IG: 0.026883488517105758
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary', 'org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath', 'org.apache.tools.ant.taskdefs.optional.PropertyFileTest@testExerciseDefaultAndIncrement', 'org.apache.tools.ant.taskdefs.ParallelTest@testFail', 'org.apache.tools.ant.DefaultLoggerTest@testThrowableMessage', 'org.apache.tools.ant.taskdefs.ConcatTest@test2', 'org.apache.tools.ant.taskdefs.GetTest@test1', 'org.apache.tools.ant.taskdefs.DeleteTest@test1', 'org.apache.tools.ant.taskdefs.ConcatTest@testConcatNoNewlineEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testSrcDirTest']
+
+Round #: 22 Selected Test: org.apache.tools.ant.taskdefs.AntStructureTest@test1 outcome: True
+ -- General Entropy: 0.4473670242942695
+ -- Best IG: 0.024672428961326986
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary', 'org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath', 'org.apache.tools.ant.taskdefs.optional.PropertyFileTest@testExerciseDefaultAndIncrement', 'org.apache.tools.ant.taskdefs.ParallelTest@testFail', 'org.apache.tools.ant.DefaultLoggerTest@testThrowableMessage', 'org.apache.tools.ant.taskdefs.ConcatTest@test2', 'org.apache.tools.ant.taskdefs.GetTest@test1', 'org.apache.tools.ant.taskdefs.DeleteTest@test1', 'org.apache.tools.ant.taskdefs.ConcatTest@testConcatNoNewlineEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testSrcDirTest', 'org.apache.tools.ant.taskdefs.AntStructureTest@test1']
+
+Round #: 23 Selected Test: org.apache.tools.ant.types.optional.ScriptSelectorTest@testSelectionClearWorks outcome: False
+ -- General Entropy: 0.4287001045468487
+ -- Best IG: 0.02224965656774397
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary', 'org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath', 'org.apache.tools.ant.taskdefs.optional.PropertyFileTest@testExerciseDefaultAndIncrement', 'org.apache.tools.ant.taskdefs.ParallelTest@testFail', 'org.apache.tools.ant.DefaultLoggerTest@testThrowableMessage', 'org.apache.tools.ant.taskdefs.ConcatTest@test2', 'org.apache.tools.ant.taskdefs.GetTest@test1', 'org.apache.tools.ant.taskdefs.DeleteTest@test1', 'org.apache.tools.ant.taskdefs.ConcatTest@testConcatNoNewlineEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testSrcDirTest', 'org.apache.tools.ant.taskdefs.AntStructureTest@test1', 'org.apache.tools.ant.types.optional.ScriptSelectorTest@testSelectionClearWorks']
+
+Round #: 24 Selected Test: org.apache.tools.ant.taskdefs.TouchTest@testBadPattern outcome: True
+ -- General Entropy: 0.4061972301076294
+ -- Best IG: 0.01947060834434622
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary', 'org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath', 'org.apache.tools.ant.taskdefs.optional.PropertyFileTest@testExerciseDefaultAndIncrement', 'org.apache.tools.ant.taskdefs.ParallelTest@testFail', 'org.apache.tools.ant.DefaultLoggerTest@testThrowableMessage', 'org.apache.tools.ant.taskdefs.ConcatTest@test2', 'org.apache.tools.ant.taskdefs.GetTest@test1', 'org.apache.tools.ant.taskdefs.DeleteTest@test1', 'org.apache.tools.ant.taskdefs.ConcatTest@testConcatNoNewlineEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testSrcDirTest', 'org.apache.tools.ant.taskdefs.AntStructureTest@test1', 'org.apache.tools.ant.types.optional.ScriptSelectorTest@testSelectionClearWorks', 'org.apache.tools.ant.taskdefs.TouchTest@testBadPattern']
+
+Round #: 25 Selected Test: org.apache.tools.ant.taskdefs.FixCrLfTest@testFixFileExclusive outcome: True
+ -- General Entropy: 0.3908754995927234
+ -- Best IG: 0.017856601127512306
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary', 'org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath', 'org.apache.tools.ant.taskdefs.optional.PropertyFileTest@testExerciseDefaultAndIncrement', 'org.apache.tools.ant.taskdefs.ParallelTest@testFail', 'org.apache.tools.ant.DefaultLoggerTest@testThrowableMessage', 'org.apache.tools.ant.taskdefs.ConcatTest@test2', 'org.apache.tools.ant.taskdefs.GetTest@test1', 'org.apache.tools.ant.taskdefs.DeleteTest@test1', 'org.apache.tools.ant.taskdefs.ConcatTest@testConcatNoNewlineEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testSrcDirTest', 'org.apache.tools.ant.taskdefs.AntStructureTest@test1', 'org.apache.tools.ant.types.optional.ScriptSelectorTest@testSelectionClearWorks', 'org.apache.tools.ant.taskdefs.TouchTest@testBadPattern', 'org.apache.tools.ant.taskdefs.FixCrLfTest@testFixFileExclusive']
+
+Round #: 26 Selected Test: org.apache.tools.ant.taskdefs.InputTest@test3 outcome: False
+ -- General Entropy: 0.37672210406503026
+ -- Best IG: 0.016681318319214322
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary', 'org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath', 'org.apache.tools.ant.taskdefs.optional.PropertyFileTest@testExerciseDefaultAndIncrement', 'org.apache.tools.ant.taskdefs.ParallelTest@testFail', 'org.apache.tools.ant.DefaultLoggerTest@testThrowableMessage', 'org.apache.tools.ant.taskdefs.ConcatTest@test2', 'org.apache.tools.ant.taskdefs.GetTest@test1', 'org.apache.tools.ant.taskdefs.DeleteTest@test1', 'org.apache.tools.ant.taskdefs.ConcatTest@testConcatNoNewlineEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testSrcDirTest', 'org.apache.tools.ant.taskdefs.AntStructureTest@test1', 'org.apache.tools.ant.types.optional.ScriptSelectorTest@testSelectionClearWorks', 'org.apache.tools.ant.taskdefs.TouchTest@testBadPattern', 'org.apache.tools.ant.taskdefs.FixCrLfTest@testFixFileExclusive', 'org.apache.tools.ant.taskdefs.InputTest@test3']
+
+Round #: 27 Selected Test: org.apache.tools.ant.types.selectors.ModifiedSelectorTest@testSeldirs outcome: False
+ -- General Entropy: 0.3598899420543424
+ -- Best IG: 0.01502154750137269
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary', 'org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath', 'org.apache.tools.ant.taskdefs.optional.PropertyFileTest@testExerciseDefaultAndIncrement', 'org.apache.tools.ant.taskdefs.ParallelTest@testFail', 'org.apache.tools.ant.DefaultLoggerTest@testThrowableMessage', 'org.apache.tools.ant.taskdefs.ConcatTest@test2', 'org.apache.tools.ant.taskdefs.GetTest@test1', 'org.apache.tools.ant.taskdefs.DeleteTest@test1', 'org.apache.tools.ant.taskdefs.ConcatTest@testConcatNoNewlineEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testSrcDirTest', 'org.apache.tools.ant.taskdefs.AntStructureTest@test1', 'org.apache.tools.ant.types.optional.ScriptSelectorTest@testSelectionClearWorks', 'org.apache.tools.ant.taskdefs.TouchTest@testBadPattern', 'org.apache.tools.ant.taskdefs.FixCrLfTest@testFixFileExclusive', 'org.apache.tools.ant.taskdefs.InputTest@test3', 'org.apache.tools.ant.types.selectors.ModifiedSelectorTest@testSeldirs']
+
+Round #: 28 Selected Test: org.apache.tools.ant.taskdefs.TarTest@test4 outcome: True
+ -- General Entropy: 0.3447448410553195
+ -- Best IG: 0.013883824856410432
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary', 'org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath', 'org.apache.tools.ant.taskdefs.optional.PropertyFileTest@testExerciseDefaultAndIncrement', 'org.apache.tools.ant.taskdefs.ParallelTest@testFail', 'org.apache.tools.ant.DefaultLoggerTest@testThrowableMessage', 'org.apache.tools.ant.taskdefs.ConcatTest@test2', 'org.apache.tools.ant.taskdefs.GetTest@test1', 'org.apache.tools.ant.taskdefs.DeleteTest@test1', 'org.apache.tools.ant.taskdefs.ConcatTest@testConcatNoNewlineEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testSrcDirTest', 'org.apache.tools.ant.taskdefs.AntStructureTest@test1', 'org.apache.tools.ant.types.optional.ScriptSelectorTest@testSelectionClearWorks', 'org.apache.tools.ant.taskdefs.TouchTest@testBadPattern', 'org.apache.tools.ant.taskdefs.FixCrLfTest@testFixFileExclusive', 'org.apache.tools.ant.taskdefs.InputTest@test3', 'org.apache.tools.ant.types.selectors.ModifiedSelectorTest@testSeldirs', 'org.apache.tools.ant.taskdefs.TarTest@test4']
+
+Round #: 29 Selected Test: org.apache.tools.ant.taskdefs.TarTest@test9 outcome: True
+ -- General Entropy: 0.3338090560300977
+ -- Best IG: 0.01295077858774879
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary', 'org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath', 'org.apache.tools.ant.taskdefs.optional.PropertyFileTest@testExerciseDefaultAndIncrement', 'org.apache.tools.ant.taskdefs.ParallelTest@testFail', 'org.apache.tools.ant.DefaultLoggerTest@testThrowableMessage', 'org.apache.tools.ant.taskdefs.ConcatTest@test2', 'org.apache.tools.ant.taskdefs.GetTest@test1', 'org.apache.tools.ant.taskdefs.DeleteTest@test1', 'org.apache.tools.ant.taskdefs.ConcatTest@testConcatNoNewlineEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testSrcDirTest', 'org.apache.tools.ant.taskdefs.AntStructureTest@test1', 'org.apache.tools.ant.types.optional.ScriptSelectorTest@testSelectionClearWorks', 'org.apache.tools.ant.taskdefs.TouchTest@testBadPattern', 'org.apache.tools.ant.taskdefs.FixCrLfTest@testFixFileExclusive', 'org.apache.tools.ant.taskdefs.InputTest@test3', 'org.apache.tools.ant.types.selectors.ModifiedSelectorTest@testSeldirs', 'org.apache.tools.ant.taskdefs.TarTest@test4', 'org.apache.tools.ant.taskdefs.TarTest@test9']
+
+Round #: 30 Selected Test: org.apache.tools.ant.taskdefs.TarTest@test1 outcome: True
+ -- General Entropy: 0.32357853150463334
+ -- Best IG: 0.01223888011983687
+ -- Till now fail found: True
+ -- Selected tests till now: ['org.apache.tools.ant.taskdefs.ConcatTest@test3', 'org.apache.tools.ant.taskdefs.ManifestTest@test6', 'org.apache.tools.ant.taskdefs.JarTest@testManifestStaysIntact', 'org.apache.tools.ant.taskdefs.JarTest@testUpdateIfOnlyManifestHasChanged', 'org.apache.tools.ant.AntClassLoaderTest@testGetPackage', 'org.apache.tools.ant.taskdefs.ProtectedJarMethodsTest@testFindJarNameLongestMatchWins', 'org.apache.tools.ant.taskdefs.WarTest@testLibRefs', 'org.apache.tools.ant.taskdefs.ZipTest@testZipEmptyDir', 'org.apache.tools.ant.types.AssertionsTest@testReferences', 'org.apache.tools.ant.taskdefs.InitializeClassTest@testAll', 'org.apache.tools.ant.taskdefs.ZipTest@testUpdateIsNecessary', 'org.apache.tools.ant.taskdefs.optional.XsltTest@testXMLWithEntitiesInNonAsciiPath', 'org.apache.tools.ant.taskdefs.optional.PropertyFileTest@testExerciseDefaultAndIncrement', 'org.apache.tools.ant.taskdefs.ParallelTest@testFail', 'org.apache.tools.ant.DefaultLoggerTest@testThrowableMessage', 'org.apache.tools.ant.taskdefs.ConcatTest@test2', 'org.apache.tools.ant.taskdefs.GetTest@test1', 'org.apache.tools.ant.taskdefs.DeleteTest@test1', 'org.apache.tools.ant.taskdefs.ConcatTest@testConcatNoNewlineEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testEncoding', 'org.apache.tools.ant.taskdefs.UntarTest@testSrcDirTest', 'org.apache.tools.ant.taskdefs.AntStructureTest@test1', 'org.apache.tools.ant.types.optional.ScriptSelectorTest@testSelectionClearWorks', 'org.apache.tools.ant.taskdefs.TouchTest@testBadPattern', 'org.apache.tools.ant.taskdefs.FixCrLfTest@testFixFileExclusive', 'org.apache.tools.ant.taskdefs.InputTest@test3', 'org.apache.tools.ant.types.selectors.ModifiedSelectorTest@testSeldirs', 'org.apache.tools.ant.taskdefs.TarTest@test4', 'org.apache.tools.ant.taskdefs.TarTest@test9', 'org.apache.tools.ant.taskdefs.TarTest@test1']
+('org.apache.tools.ant.taskdefs.TarTest@test8', '0.9668690679491346', False)
+('org.apache.tools.ant.taskdefs.TarTest@test11', '0.9668690679491346', False)
+('org.apache.tools.ant.taskdefs.TarTest@test10', '0.9668690679491346', False)
+('org.apache.tools.ant.taskdefs.TarTest@test8UsingZipFileset', '0.9668690679491346', False)
+('org.apache.tools.ant.taskdefs.GetTest@test6', '0.9668652373754267', True)
+('org.apache.tools.ant.taskdefs.GetTest@test1', '0.9668617942308478', True)
+('org.apache.tools.ant.taskdefs.ParallelTest@testFail', '0.9668616415073219', True)
+('org.apache.tools.ant.taskdefs.AntStructureTest@test1', '0.9668595624861193', True)
+('org.apache.tools.ant.taskdefs.UntarTest@testEncoding', '0.966858306958496', True)
+('org.apache.tools.ant.taskdefs.UntarTest@testSrcDirTest', '0.966858306958496', True)
+('org.apache.tools.ant.taskdefs.JavadocTest@testFilelistPath', '0.9668561205286256', True)
+('org.apache.tools.ant.taskdefs.ChecksumTest@testVerifyFromProperty', '0.9668559994675423', False)
+('org.apache.tools.ant.taskdefs.ChecksumTest@testVerifyTotal', '0.9668559603333575', False)
+('org.apache.tools.ant.taskdefs.ChecksumTest@testCreateMd5', '0.9668558820649878', False)
+('org.apache.tools.ant.taskdefs.ChecksumTest@testVerifyChecksumdir', '0.9668558820649878', False)
+('org.apache.tools.ant.taskdefs.ChecksumTest@testVerifyChecksumdirNoTotal', '0.9668558820649878', False)
+('org.apache.tools.ant.taskdefs.ChecksumTest@testCreateMD5SUMformat', '0.9668558820649878', False)
+('org.apache.tools.ant.ImmutableTest@test5', '0.9668558820649878', False)
+('org.apache.tools.ant.taskdefs.ChecksumTest@testVerifyTotalRC', '0.9668558820649878', False)
+('org.apache.tools.ant.taskdefs.ChecksumTest@testCreatePattern', '0.9668558820649878', False)
+('org.apache.tools.ant.taskdefs.ChecksumTest@testCreateSVFformat', '0.9668558820649878', False)
+('org.apache.tools.ant.taskdefs.ChecksumTest@testSetProperty', '0.9668558820649878', False)
+('org.apache.tools.ant.taskdefs.JavadocTest@testNestedFilesetRefInPath', '0.9668548646101371', False)
+('org.apache.tools.ant.taskdefs.JavadocTest@testNestedFilesetRef', '0.9668548646101371', False)
+('org.apache.tools.ant.taskdefs.JavadocTest@testFilesetPath', '0.9668548646101371', False)
+('org.apache.tools.ant.taskdefs.JavadocTest@testNestedFilesetPath', '0.9668548646101371', False)
+('org.apache.tools.ant.taskdefs.JavadocTest@testDoublyNestedFileset', '0.9668532991354966', False)
+('org.apache.tools.ant.taskdefs.JavadocTest@testNestedFilesetNoPatterns', '0.9668532991354966', False)
+('org.apache.tools.ant.taskdefs.JavadocTest@testDoublyNestedFilesetNoPatterns', '0.9668532991354966', False)
+('org.apache.tools.ant.taskdefs.FixCrLfTest@testFilter8', '0.9668528275941117', False)
+All done

@@ -91,7 +91,7 @@ class DiagnoserClient(object):
 
         file.close()
 
-    def get_updates_priors(self, test, state, tests, test_true_outcomes_dictionary, tests_bugged_components_dictionary):
+    def get_updates_priors(self, test, state, tests, test_true_outcomes_dictionary, tests_bugged_components_dictionary, comp_dict):
         new_priors_dictionary = {}
         comp_prob_dict = {}
         union_tests = {}
@@ -114,7 +114,7 @@ class DiagnoserClient(object):
             if comp in tests_bugged_components_dictionary:
                 union_bugged_components[comp] = comp
 
-        self.write_analyzer_input_file(union_tests.values(), union_components.values(), union_test_true_outcomes, union_bugged_components)
+        self.write_analyzer_input_file(union_tests.values(), comp_dict.values(), union_test_true_outcomes, union_bugged_components)
 
         # Use diagestor to get new priors given a state of the current test and previous tests.
         inst = readPlanningFile(r"diagnoser_input")
@@ -153,11 +153,25 @@ class Optimizer(object):
         self._max_tests_amount = max_tests_amount
         self._components_dictionary = components_dictionary
         self._bugged_components_dict = bugged_components_dict
+        self.normilize()
+
+    def normilize(self):
+
+        keys = []
+        priors = []
+        for key in self._components_dictionary:
+            keys.append(key)
+            priors.append(self._components_dictionary[key].get_failure_probability())
+
+        priors_norms = operations.normilize(priors)
+
+        for index in range(0, len(priors_norms)):
+            self._components_dictionary[keys[index]].set_failure_probability(priors_norms[index])
 
     def update_components_dictionary(self,post_prob_test_run_dict):
-        for c in self._components_dictionary:
-            if c in post_prob_test_run_dict:
-                self._components_dictionary[c].set_failure_probability(post_prob_test_run_dict[c])
+        for c in post_prob_test_run_dict:
+            self._components_dictionary[c].set_failure_probability(post_prob_test_run_dict[c])
+        self.normilize()
 
     def calculate_general_entropy(self):
         '''
@@ -178,29 +192,30 @@ class Optimizer(object):
         :return: test entropy
         '''
 
-        performed_tests_true_outcomes_dictionary = {}
-        performed_tests_bugged_components_dictionary = {}
+        # performed_tests_true_outcomes_dictionary = {}
+        # performed_tests_bugged_components_dictionary = {}
+        #
+        # for t in performed_tests:
+        #     test_name = t.get_name()
+        #     if test_name in self._test_true_outcomes_dictionary:
+        #         performed_tests_true_outcomes_dictionary[test_name] = self._test_true_outcomes_dictionary[test_name]
+        #     for comp in t.get_components():
+        #         if comp.get_name() in self._bugged_components_dict:
+        #             performed_tests_bugged_components_dictionary[comp.get_name()] = self._bugged_components_dict[comp.get_name()]
+        #
+        # for comp in test.get_components():
+        #     if comp.get_name() in self._bugged_components_dict:
+        #         performed_tests_bugged_components_dictionary[comp.get_name()] = self._bugged_components_dict[comp.get_name()]
 
-        for t in performed_tests:
-            test_name = t.get_name()
-            if test_name in self._test_true_outcomes_dictionary:
-                performed_tests_true_outcomes_dictionary[test_name] = self._test_true_outcomes_dictionary[test_name]
-            for comp in t.get_components():
-                if comp.get_name() in self._bugged_components_dict:
-                    performed_tests_bugged_components_dictionary[comp.get_name()] = self._bugged_components_dict[comp.get_name()]
-
-        for comp in test.get_components():
-            if comp.get_name() in self._bugged_components_dict:
-                performed_tests_bugged_components_dictionary[comp.get_name()] = self._bugged_components_dict[comp.get_name()]
-
-        return operations.calculate_test_entropy(test, performed_tests, performed_tests_true_outcomes_dictionary,performed_tests_bugged_components_dictionary,
-                                                 diagnoser_client,self._components_dictionary)
+        return operations.calculate_test_entropy(test, performed_tests, self._test_true_outcomes_dictionary, self._bugged_components_dict,
+                                                 diagnoser_client, self._components_dictionary)
 
     def find_best_tests(self):
         '''
         main algorithm of the optimizer to find the best sub set that will yield the max bug count.
         :return: void
         '''
+        fail_found = False
         diagnoser_client = DiagnoserClient()
         tests_buffer = {}
         rounds = min(len(self._tests_dictionary), self._max_tests_amount)
@@ -230,26 +245,34 @@ class Optimizer(object):
 
             #Actual run of the selected test with real test state outcome
 
-            print('Round #:', round, ' Test: ', selected_key, ' true outcome: ', self._test_true_outcomes_dictionary[selected_key])
+            print('\nRound #: ' + str(round) + ' Selected Test: ' + str(selected_key) + ' outcome: ' + str(self._test_true_outcomes_dictionary[selected_key]))
 
-            print(selected_key, current_best_test.get_components_failure_probability())
+            # print(selected_key, current_best_test.get_components_failure_probability())
+
+            fail_found |= not self._test_true_outcomes_dictionary[selected_key]
 
             #TODO: unmark this statement
             t_outcome = 0 if self._test_true_outcomes_dictionary[selected_key] else 1
 
             #t_outcome = 1
 
+            post_prob_test_run_dict = []
 
-            post_prob_test_run_dict =  diagnoser_client.get_updates_priors(current_best_test, t_outcome, tests_by_information_gain, self._test_true_outcomes_dictionary,
-                                                self._bugged_components_dict)
+            if fail_found:
+                post_prob_test_run_dict =  diagnoser_client.get_updates_priors(current_best_test, t_outcome, tests_by_information_gain, self._test_true_outcomes_dictionary,
+                                                    self._bugged_components_dict, self._components_dictionary)
             tests_by_information_gain.append(current_best_test)
             tests_IG.append(selected_key)
 
-            print(selected_key, post_prob_test_run_dict)
-            self.update_components_dictionary(post_prob_test_run_dict)
+            print(' -- General Entropy: ' + str(general_entropy))
+            print(' -- Best IG: ' + str(current_best_information_gain))
+            print(' -- Till now fail found: '+str(fail_found))
+            # print(selected_key, post_prob_test_run_dict)
+            if fail_found:
+                self.update_components_dictionary(post_prob_test_run_dict)
 
             tests_buffer.pop(selected_key)
-            print("tests_by_information_gain: ", tests_IG)
+            print(" -- Selected tests till now: " + str(tests_IG))
             general_entropy = self.calculate_general_entropy()
 
 
@@ -294,7 +317,7 @@ def main():
         # print(test,test_dict[test].get_failure_probability(),operations.calculate_failure_probability(test_dict[test]))
 
 
-    max_tests_amount = 15
+    max_tests_amount = 30
     optimizer = Optimizer(comp_dict, test_outcomes_dict, test_dict,bugged_components_dict,max_tests_amount)
     optimizer.find_best_tests()
 
