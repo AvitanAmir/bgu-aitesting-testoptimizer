@@ -138,8 +138,50 @@ class DiagnoserClient(object):
                 comp = comp_new_priors_dict[component.get_name()]
                 if comp in comp_prob_dict:
                     new_priors_dictionary[component.get_name()] = comp_prob_dict[comp]
+        return new_priors_dictionary
+
+
+
+
+
+    def get_analytic_updates_priors(self, test, state, tests, test_true_outcomes_dictionary, tests_bugged_components_dictionary, comp_dict,B):
+        new_priors_dictionary = {}
+        comp_prob_dict = {}
+        union_tests = {}
+        union_components = {}
+        union_bugged_components = {}
+        union_test_true_outcomes = {}
+
+        for t in tests:
+            union_tests[t.get_name()] = t
+            union_test_true_outcomes[t.get_name()] = 0 if test_true_outcomes_dictionary[t.get_name()] else 1
+            for comp in t.get_components():
+                union_components[comp.get_name()] = comp
+
+        union_tests[test.get_name()] = test
+        union_test_true_outcomes[test.get_name()] = state
+        for comp in test.get_components():
+            union_components[comp.get_name()] = comp
+
+        for comp in union_components:
+            if comp in tests_bugged_components_dictionary:
+                union_bugged_components[comp] = comp
+
+        new_comp_prior = 0.0
+        fail_prob = 0.0
+        for c in test.get_components():
+            if state == 0:
+                new_comp_prior = test.calculate_component_failure_probability_given_test(c.get_name(),B)
+                fail_prob = new_comp_prior
+                new_priors_dictionary[c.get_name()] = fail_prob
+            else:
+                new_comp_prior = test.calculate_component_pass_probability_given_test(c.get_name(),B)
+                fail_prob = 1 - new_comp_prior
+                fail_prob = new_comp_prior
+                new_priors_dictionary[c.get_name()]= fail_prob
 
         return new_priors_dictionary
+
 
 
 class Optimizer(object):
@@ -170,6 +212,7 @@ class Optimizer(object):
 
     def update_components_dictionary(self,post_prob_test_run_dict):
         for c in post_prob_test_run_dict:
+            #print(self._components_dictionary[c].get_name(),': ',self._components_dictionary[c].get_failure_probability(),' , ',post_prob_test_run_dict[c] )
             self._components_dictionary[c].set_failure_probability(post_prob_test_run_dict[c])
         self.normilize()
 
@@ -191,22 +234,6 @@ class Optimizer(object):
         :param test:
         :return: test entropy
         '''
-
-        # performed_tests_true_outcomes_dictionary = {}
-        # performed_tests_bugged_components_dictionary = {}
-        #
-        # for t in performed_tests:
-        #     test_name = t.get_name()
-        #     if test_name in self._test_true_outcomes_dictionary:
-        #         performed_tests_true_outcomes_dictionary[test_name] = self._test_true_outcomes_dictionary[test_name]
-        #     for comp in t.get_components():
-        #         if comp.get_name() in self._bugged_components_dict:
-        #             performed_tests_bugged_components_dictionary[comp.get_name()] = self._bugged_components_dict[comp.get_name()]
-        #
-        # for comp in test.get_components():
-        #     if comp.get_name() in self._bugged_components_dict:
-        #         performed_tests_bugged_components_dictionary[comp.get_name()] = self._bugged_components_dict[comp.get_name()]
-
         return operations.calculate_test_entropy(test, performed_tests, self._test_true_outcomes_dictionary, self._bugged_components_dict,
                                                  diagnoser_client, self._components_dictionary)
 
@@ -275,7 +302,78 @@ class Optimizer(object):
             print(" -- Selected tests till now: " + str(tests_IG))
             general_entropy = self.calculate_general_entropy()
 
+    def analytic_find_best_tests(self,B):
+        '''
+        main algorithm of the optimizer to find the best sub set that will yield the max bug count.
+        :return: void
+        '''
+        fail_found = False
+        debug = 0
+        diagnoser_client = DiagnoserClient()
+        tests_buffer = {}
+        rounds = min(len(self._tests_dictionary), self._max_tests_amount)
 
+        for key in self._tests_dictionary.keys():
+            #TODO: Remove
+            if len(self._tests_dictionary[key].get_components())>1 and len(self._tests_dictionary[key].get_components())<20:
+                tests_buffer[key] = self._tests_dictionary[key]
+
+        tests_by_information_gain = []
+        tests_IG = []
+        general_entropy = self.calculate_general_entropy()
+
+        for round in range(1, rounds + 1):
+            current_best_information_gain = 0
+            current_best_test = 0
+            selected_key = ''
+            for key in tests_buffer.keys():
+                test = tests_buffer[key]
+                if debug==1:
+                    print('Test: ', key,' Ent:' ,test.calculate_test_entropy(B))
+                current_information_gain = general_entropy - test.calculate_test_entropy(B)
+                if debug == 1:
+                    print('Test: ',key,' general_entropy: ',general_entropy,' information_gain: ',current_information_gain)
+                if current_information_gain > current_best_information_gain:
+                    current_best_information_gain = current_information_gain
+                    current_best_test = test
+                    selected_key = key
+
+
+            #Actual run of the selected test with real test state outcome
+
+            print('\nRound #: ' + str(round) + ' Selected Test: ' + str(selected_key) + ' outcome: ' + str(self._test_true_outcomes_dictionary[selected_key]))
+
+            # print(selected_key, current_best_test.get_components_failure_probability())
+
+            fail_found |= not self._test_true_outcomes_dictionary[selected_key]
+
+            #TODO: unmark this statement
+            t_outcome = 0 if self._test_true_outcomes_dictionary[selected_key] else 1
+
+            #t_outcome = 1
+
+            post_prob_test_run_dict = []
+
+
+            if fail_found:
+            #   post_prob_test_run_dict =  diagnoser_client.get_updates_priors(current_best_test, t_outcome, tests_by_information_gain, self._test_true_outcomes_dictionary,
+            #                                   self._bugged_components_dict, self._components_dictionary)
+                post_prob_test_run_dict =  diagnoser_client.get_analytic_updates_priors(current_best_test, t_outcome, tests_by_information_gain, self._test_true_outcomes_dictionary,
+                                                self._bugged_components_dict, self._components_dictionary,B)
+
+            tests_by_information_gain.append(current_best_test)
+            tests_IG.append(selected_key)
+
+            print(' -- General Entropy: ' + str(general_entropy))
+            print(' -- Best IG: ' + str(current_best_information_gain))
+            print(' -- Till now fail found: '+str(fail_found))
+            # print(selected_key, post_prob_test_run_dict)
+            if fail_found:
+                self.update_components_dictionary(post_prob_test_run_dict)
+
+            tests_buffer.pop(selected_key)
+            print(" -- Selected tests till now: " + str(tests_IG))
+            general_entropy = self.calculate_general_entropy()
 def main():
     component_probabilities_df = pd.read_csv('data/ComponentProbabilities.csv')
     test_components_df = pd.read_csv('data/TestComponents.csv')
@@ -316,22 +414,47 @@ def main():
                 test_dict[test] = models.Test(test, test_comp_dict[test])
         # print(test,test_dict[test].get_failure_probability(),operations.calculate_failure_probability(test_dict[test]))
 
+    '''    for test in test_dict:
+        if str(test) == 'nan' or test not in test_outcomes_dict or len(test_dict[test].get_components_list())>5:
+            pass
+        else:
+            B=0.5
+            print('test: ',test)
+            print('FailureProb:',test_dict[test].calculate_test_failure_probability(B))
+            print('PassProb:', test_dict[test].calculate_test_pass_probability(B))
+            ent = test_dict[test].calculate_test_entropy( B)
+            print('Test Entropy: ',ent)
+            for c in test_dict[test].get_components():
+                is_faulty = 0
 
+                print('-------component: ',c.get_name())
+                if c.get_name() in bugged_components_dict:
+                    is_faulty = 1
+                failure_probability_given_component = test_dict[test].calculate_test_failure_probability_given_component(c.get_name(),is_faulty,B)
+                #if failure_probability_given_component == 1:
+                #    print('-------failure_probability_given_component: ',test_dict[test].calculate_test_failure_probability_given_component(c.get_name(),is_faulty))
+                component_pass_probability_given_test = test_dict[test].calculate_component_failure_probability_given_test(c.get_name(),B)
+                #print('-------_____component_pass_probability_given_test: ', component_pass_probability_given_test) '''
     max_tests_amount = 30
-    optimizer = Optimizer(comp_dict, test_outcomes_dict, test_dict,bugged_components_dict,max_tests_amount)
-    optimizer.find_best_tests()
-
     ignore_tests = []
     for round in range(1, max_tests_amount + 1):
-        test_tup = operations.get_test_with_max_failure_probability(test_dict,ignore_tests,test_outcomes_dict)
+        test_tup = operations.get_test_with_max_failure_probability(test_dict, ignore_tests, test_outcomes_dict)
         ignore_tests.append(test_tup[0])
         if test_tup[0] in test_outcomes_dict:
-            print(test_tup[0],test_tup[1],test_outcomes_dict[test_tup[0]])
+            print('round:',round,' Test:',test_tup[0], test_tup[1], test_outcomes_dict[test_tup[0]])
+
+    B= 0.1
+    optimizer = Optimizer(comp_dict, test_outcomes_dict, test_dict,bugged_components_dict,max_tests_amount)
+    #optimizer.find_best_tests()
+    optimizer.analytic_find_best_tests(B)
+
+
 
     #print('Tests failure probability:')
     #operations.get_tests_failure_probability(test_dict,test_outcomes_dict)
 
     print('All done')
+
 
 
 if __name__ == "__main__":

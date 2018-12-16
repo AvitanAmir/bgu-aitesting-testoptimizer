@@ -95,4 +95,3 @@ def calculate_test_entropy(test, performed_tests, tests_true_outcomes_dictionary
     test_entropy = success_prob * success_entropy + failure_prob * failure_entropy
 
     return test_entropy
-
