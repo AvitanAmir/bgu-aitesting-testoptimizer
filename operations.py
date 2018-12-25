@@ -1,5 +1,6 @@
 from scipy.stats import entropy
-
+import itertools
+import random
 
 def normilize(arr):
     arr_sum = sum(arr)
@@ -95,3 +96,23 @@ def calculate_test_entropy(test, performed_tests, tests_true_outcomes_dictionary
     test_entropy = success_prob * success_entropy + failure_prob * failure_entropy
 
     return test_entropy
+
+
+def get_tests_for_max_covering(test_dict,max_tests_amount):
+    component_count = 0
+    test_name = random.choice(test_dict.keys())
+    component_list =[]
+    test_list = []
+    chosen_test = ''
+    for round in range(1, max_tests_amount + 1):
+        for tst in test_dict:
+            if tst not in test_list:
+                component_count = len(list(set(component_list).union(set(test_dict[tst].get_components_list()))))
+                if component_count> len(list(set(list(set(component_list).union(set(test_dict[test_name].get_components_list())))))):
+                    test_name = tst
+        test_list.append(test_name)
+        component_list.extend(list(set(test_dict[test_name].get_components_list())))
+        #complist = list(set(component_list))
+        #print(test_list)
+        #print("covered components: ",len(complist))
+    return test_list

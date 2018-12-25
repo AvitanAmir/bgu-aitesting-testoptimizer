@@ -436,19 +436,25 @@ def main():
                 component_pass_probability_given_test = test_dict[test].calculate_component_failure_probability_given_test(c.get_name(),B)
                 #print('-------_____component_pass_probability_given_test: ', component_pass_probability_given_test) '''
     max_tests_amount = 30
+
+    covering_tests = operations.get_tests_for_max_covering(test_dict, max_tests_amount)
+    for round in range(1, len(covering_tests) + 1):
+        if covering_tests[round-1] in test_outcomes_dict:
+            print('Round:',round,' Test:',covering_tests[round-1], test_outcomes_dict[covering_tests[round-1]])
+
+
     ignore_tests = []
     for round in range(1, max_tests_amount + 1):
         test_tup = operations.get_test_with_max_failure_probability(test_dict, ignore_tests, test_outcomes_dict)
         ignore_tests.append(test_tup[0])
         if test_tup[0] in test_outcomes_dict:
-            print('round:',round,' Test:',test_tup[0], test_tup[1], test_outcomes_dict[test_tup[0]])
+            print('Round:',round,' Test:',test_tup[0], test_tup[1], test_outcomes_dict[test_tup[0]])
+
 
     B= 0.1
     optimizer = Optimizer(comp_dict, test_outcomes_dict, test_dict,bugged_components_dict,max_tests_amount)
     #optimizer.find_best_tests()
     optimizer.analytic_find_best_tests(B)
-
-
 
     #print('Tests failure probability:')
     #operations.get_tests_failure_probability(test_dict,test_outcomes_dict)
