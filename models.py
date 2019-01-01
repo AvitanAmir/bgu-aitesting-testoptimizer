@@ -1,6 +1,8 @@
 from scipy.stats import entropy
 from math import pow,log
 import itertools
+import numpy as np
+import operations
 
 class Component(object):
 
@@ -27,6 +29,7 @@ class Test(object):
     def __init__(self, name, components):
         self._name = name
         self._components = components
+        self._Ptf = 0
 
     def get_name(self):
         return self._name
@@ -71,21 +74,37 @@ class Test(object):
 
         return entropy(probs)
 
+    def get_test_Ptf(self):
+        return self._Ptf
+
     ''' Analytics '''
 
 
     def calculate_test_failure_probability(self,B):
         probs = []
+        i =0
         for component in self._components:
-            probs.append(component.get_failure_probability())
+            i+=1
+            #TODO: Remove this condition MEMORY ERROR when a lot of components
+            if i<25 and component.get_failure_probability()!=0.0:
+                probs.append(component.get_failure_probability())
 
         PtF = 0
         Bpower = 0
         prob_prod = 1
         prob_prod_sum = 0
         component_count = len(probs)
-        #if component_count>5:
-        #    return PtF
+        for k in range(1, component_count + 1):
+            Bpower = pow((-1 * B), k)
+            subsets = list(itertools.combinations(range(1, component_count + 1), k))
+            subset_probs = list(itertools.combinations(probs, k))
+            prob_prod_sum = 0
+            for j in range(0, len(subset_probs)):
+                prob_prod_sum += np.prod(np.array(subset_probs[j]))
+            PtF += Bpower * prob_prod_sum
+        PtF = -1 * PtF
+        return PtF
+    '''    
         for k in range(1,component_count+1):
             Bpower = pow((-1*B),k)
             subsets = list(itertools.combinations(range(1, component_count+1), k))
@@ -97,9 +116,10 @@ class Test(object):
                 prob_prod_sum+=prob_prod
             PtF += Bpower*prob_prod_sum
         PtF = -1*PtF
+    
         #print ('__PtF: ',PtF)
         return PtF
-
+    '''
     def calculate_test_pass_probability(self,B):
         return (1- self.calculate_test_failure_probability(B))
 
@@ -121,9 +141,9 @@ class Test(object):
 
 
     ''''P(c|t) = (P(t=p|c) *  P(c))/P(t)'''
-    def calculate_component_failure_probability_given_test(self,comp,B):
+    def calculate_component_failure_probability_given_test(self,comp,B,Ptf):
         test_failure_probability_given_component=self.calculate_test_failure_probability_given_component(comp,1,B)*self.get_components_failure_probability()[comp]
-        test_failure_probability=self.calculate_test_failure_probability(B)
+        test_failure_probability=Ptf
         if test_failure_probability==0.0:
             pct = 0
         else:
@@ -134,9 +154,10 @@ class Test(object):
 
     ''''P(c|t) = (P(t=p|c) *  P(c))/P(t)'''
 
-    def calculate_component_pass_probability_given_test(self, comp, B):
+    def calculate_component_pass_probability_given_test(self, comp, B,Ptf):
         test_pass_probability_given_component = self.calculate_test_failure_probability_given_component(comp, 0, B) * (1 - self.get_components_failure_probability()[comp])
-        test_pass_probability = (1 - self.calculate_test_failure_probability(B))
+        #test_pass_probability = (1 - self.calculate_test_failure_probability(B))
+        test_pass_probability = (1 - Ptf)
         if test_pass_probability == 0.0:
             pct = 0
         else:
@@ -146,35 +167,51 @@ class Test(object):
         return pct
 
     '''E(t=P)=-cC Sum(log(P(c|t=P))P(c|t=P))'''
-    def calculate_test_pass_entropy(self,B):
+    def calculate_test_pass_entropy(self,B,Ptf):
         entropy_omega_pass = 0
+        comp_prob=[]
         for comp in self._components:
-            if (self.calculate_component_pass_probability_given_test(comp.get_name(),B))== 0.0:
+            if (self.calculate_component_pass_probability_given_test(comp.get_name(),B,Ptf))== 0.0:
                 pass
             else:
-                entropy_omega_pass += log(self.calculate_component_pass_probability_given_test(comp.get_name(),B))*self.calculate_component_pass_probability_given_test(comp.get_name(),B)
+                c_entropy =log(self.calculate_component_pass_probability_given_test(comp.get_name(), B, Ptf)) * self.calculate_component_pass_probability_given_test(comp.get_name(), B, Ptf)
+                #comp_prob.append(c_entropy)
+                # ORG
+                entropy_omega_pass += c_entropy
 
+        #entropy_omega_pass = entropy(comp_entropy)
+        #entropy_omega_pass =entropy(list(operations.normilize(comp_prob)))
+        # ORG
         entropy_omega_pass = -1*entropy_omega_pass
         return entropy_omega_pass
 
     '''E(t=F)=-cC Sum(log(P(c|t=F))P(c|t=F))'''
-    def calculate_test_failure_entropy(self, B):
+    def calculate_test_failure_entropy(self, B,Ptf):
         entropy_omega_failure = 0
+        comp_prob = []
         for comp in self._components:
-            if (self.calculate_component_failure_probability_given_test(comp.get_name(),B))== 0.0:
+            if (self.calculate_component_failure_probability_given_test(comp.get_name(),B,Ptf))== 0.0:
                 pass
             else:
-                entropy_omega_failure+= log(self.calculate_component_failure_probability_given_test(comp.get_name(),B)) * (self.calculate_component_failure_probability_given_test(comp.get_name(), B))
-
-        entropy_omega_failure = -1 * entropy_omega_failure
+                c_entropy = log(self.calculate_component_failure_probability_given_test(comp.get_name(),B,Ptf)) * (self.calculate_component_failure_probability_given_test(comp.get_name(), B,Ptf))
+                #comp_prob.append(c_entropy)
+                # ORG
+                entropy_omega_failure+= c_entropy
+        #entropy_omega_failure = entropy(comp_prob)
+        #entropy_omega_failure =entropy(list(operations.normilize(comp_prob)))
+        # ORG
+        entropy_omega_failure = -1*entropy_omega_failure
         return entropy_omega_failure
 
     '''E(Omega| t) = -(P(t=P)*E(t=P) + P(t=F)*E(t=F)).'''
     def calculate_test_entropy(self, B):
-        #print(self.get_name())
+        print(self.get_name())
         Ptf = self.calculate_test_failure_probability(B)
-        pEnt = self.calculate_test_pass_entropy(B)
-        fEnt = self.calculate_test_failure_entropy(B)
-        test_entropy = -1* ((1- Ptf)*pEnt+ Ptf*fEnt)
-        #print('Ptf: ',Ptf,' pEnt: ',pEnt,' fEnt: ',fEnt,' test_entropy: ',test_entropy)
+        self._Ptf = Ptf
+        pEnt = self.calculate_test_pass_entropy(B,Ptf)
+        fEnt = self.calculate_test_failure_entropy(B,Ptf)
+        #ORG
+        test_entropy =  -1*((1- Ptf)*pEnt+ Ptf*fEnt)
+        #test_entropy = ((1 - Ptf) * pEnt + Ptf * fEnt)
+        print('Ptf: ',Ptf,' pEnt: ',pEnt,' fEnt: ',fEnt,' test_entropy: ',test_entropy)
         return test_entropy

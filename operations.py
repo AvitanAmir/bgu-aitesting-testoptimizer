@@ -97,7 +97,7 @@ def calculate_test_entropy(test, performed_tests, tests_true_outcomes_dictionary
 
     return test_entropy
 
-
+'''Greedy algorithm'''
 def get_tests_for_max_covering(test_dict,max_tests_amount):
     component_count = 0
     test_name = random.choice(test_dict.keys())
