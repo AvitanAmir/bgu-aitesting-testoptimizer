@@ -413,8 +413,8 @@ def main():
     data_folder = "generated_data_sets"
     data_set_count = 5
     data_set_size = 20
-    #for i in range(0, data_set_count):
-    #    data_extraction.generate_test_data_set(test_dict, bugged_components_dict, test_outcomes_dict, data_set_size, 1, i, False)
+    for i in range(0, data_set_count):
+        data_extraction.generate_test_data_set(test_dict, bugged_components_dict, test_outcomes_dict, data_set_size, 1, i, False)
 
     for filename in os.listdir('generated_data_sets'):
         file_to_open = os.path.join(data_folder, filename)
