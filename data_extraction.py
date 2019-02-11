@@ -4,6 +4,97 @@ import operations
 import random
 import os.path
 
+def generate_data_set_input_files(execution_result_file,component_probabilities_file,target_directory_result):
+    test_info = []
+    component_probabilities=[]
+    components_dict = {}
+    test_outcome_dict = {}
+    with open(execution_result_file, 'r') as f:
+        test_info = [l.strip() for l in f.readlines()]
+    f.close()
+    # print(test_info)
+    with open(component_probabilities_file, 'r') as fp:
+        component_probabilities = [l.strip() for l in fp.readlines()]
+    fp.close()
+
+    file_to_open = os.path.join(target_directory_result,'ComponentProbabilities.csv')
+
+    with open(file_to_open, 'w+') as f:
+        f.write("%s\n" % 'ComponentName,FaultProbability')
+        for c in component_probabilities:
+            if c.find(':')>-1:
+                init_val = c[c.find(':')+1:c.find(',')]
+                function_val = '.'+c[c.find(':')+1:c.find(',')]+':'
+                replace_val = ':'+init_val+','
+                if  c.find(function_val)>-1:
+                    f.write("%s\n" % c.replace(replace_val,':<init>,'))
+                else:
+                    f.write("%s\n" % c)
+            else:
+                f.write("%s\n" % c)
+    f.close()
+
+
+    components_index = test_info.index('[Components names]')
+    bugs_index = test_info.index('[Bugs]')
+    priors_index = test_info.index('[Priors]')
+    initial_test_index = test_info.index('[InitialTests]')
+    tests_index = test_info.index('[TestDetails]')
+
+    components_list = test_info[components_index + 1:priors_index]
+    bugs_list = test_info[bugs_index + 1:initial_test_index]
+    test_list = test_info[tests_index + 1:]
+
+    components_arr = components_list[0][1:-1].split('),')
+    bugged_components_arr = bugs_list[0][1:-1].split(',')
+
+    for c in components_arr:
+        comp = c.replace(')','').strip()[1:-1].split(',')
+        components_dict[int(comp[0])] = comp[1].strip()[1:]
+
+    file_to_open = os.path.join(target_directory_result, 'BuggedFiles.csv')
+
+    with open(file_to_open, 'w+') as f:
+        f.write("%s\n" % 'fileID,name')
+        for bugged_comp in bugged_components_arr:
+            c = bugged_comp+','+components_dict[int(bugged_comp)]
+            f.write("%s\n" % c)
+    f.close()
+
+    file_to_open = os.path.join(target_directory_result, 'TestComponents.csv')
+    with open(file_to_open, 'w+') as f:
+        f.write("%s\n" % 'TestName,ComponentName')
+
+        for t in test_list:
+            test_components_info = t.split(';')
+            test_name = test_components_info[0]
+            test_components = test_components_info[1][1:-1].split(',')
+            test_outcome = test_components_info[2]
+
+            for c in test_components:
+                test_comp = test_name+','+components_dict[int(c)]
+                f.write("%s\n" % test_comp)
+                test_outcome_dict[test_name] = int(test_outcome)
+        #print(test_name,test_components,test_outcome)
+    f.close()
+
+    file_to_open = os.path.join(target_directory_result, 'TestOutcomes.csv')
+
+    with open(file_to_open, 'w+') as f:
+        f.write("%s\n" % 'TestName,TestOutcomeName,TestOutcome')
+        for t in test_outcome_dict:
+            if test_outcome_dict[t]==1:
+                outcome = t+',failure,0'
+                f.write("%s\n" % outcome)
+            else:
+                outcome = t + ',pass,1'
+                f.write("%s\n" % outcome)
+
+    f.close()
+    #print(components_list)
+    #print(bugs_list)
+    #print(test_list)
+
 
 def generate_test_data_set(test_dict,bugged_components_dict,test_outcomes_dict,data_set_size,bugged_components_count,data_set_num,debug=False):
     chosen_comp = []
@@ -122,3 +213,12 @@ def read_test_data_set(file_path,debug=False):
 
     return (failed_components,tests_set)
 
+def write_test_result_data(file_path,test_result,test_result_header,init_required,debug=False):
+    if init_required==True:
+        with open(file_path, 'w') as f:
+            f.write(test_result_header + os.linesep)
+        f.close()
+    else:
+        with open(file_path, 'a') as f:
+            f.write(test_result + os.linesep)
+        f.close()

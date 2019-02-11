@@ -88,6 +88,7 @@ class Test(object):
             #TODO: Remove this condition MEMORY ERROR when a lot of components
             if i<25 and component.get_failure_probability()!=0.0:
                 probs.append(component.get_failure_probability())
+            #probs.append(component.get_failure_probability())
 
         PtF = 0
         Bpower = 0
@@ -95,6 +96,7 @@ class Test(object):
         prob_prod_sum = 0
         component_count = len(probs)
         for k in range(1, component_count + 1):
+            #TODO: is it pow((-1 * B), k-1) or pow((-1 * B), k)?
             Bpower = pow((-1 * B), k)
             subsets = list(itertools.combinations(range(1, component_count + 1), k))
             subset_probs = list(itertools.combinations(probs, k))
@@ -102,7 +104,7 @@ class Test(object):
             for j in range(0, len(subset_probs)):
                 prob_prod_sum += np.prod(np.array(subset_probs[j]))
             PtF += Bpower * prob_prod_sum
-        PtF = -1 * PtF
+        #PtF = -1 * PtF
         return PtF
     '''    
         for k in range(1,component_count+1):
@@ -129,7 +131,8 @@ class Test(object):
         test_failure_probability = 0
         if is_faulty ==1:
             if comp in self.get_components_list():
-                test_failure_probability = B
+                #TODO: it isn't B?
+                test_failure_probability = 1
             else:
                 test_failure_probability = 0
         else : #is_faulty ==0
@@ -193,11 +196,13 @@ class Test(object):
             if (self.calculate_component_failure_probability_given_test(comp.get_name(),B,Ptf))== 0.0:
                 pass
             else:
-                c_entropy = log(self.calculate_component_failure_probability_given_test(comp.get_name(),B,Ptf)) * (self.calculate_component_failure_probability_given_test(comp.get_name(), B,Ptf))
-                #comp_prob.append(c_entropy)
+                cfailure  =self.calculate_component_failure_probability_given_test(comp.get_name(), B, Ptf)
+                c_entropy = log(cfailure) * (cfailure)
+                comp_prob.append(cfailure)
                 # ORG
                 entropy_omega_failure+= c_entropy
-        #entropy_omega_failure = entropy(comp_prob)
+
+        entropy_omega_failure = entropy(comp_prob)
         #entropy_omega_failure =entropy(list(operations.normilize(comp_prob)))
         # ORG
         entropy_omega_failure = -1*entropy_omega_failure
