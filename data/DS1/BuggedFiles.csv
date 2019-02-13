@@ -1,0 +1,4 @@
+fileID,name
+144,org.apache.commons.math3.optim.BaseOptimizer:<init>
+0,org.apache.commons.math3.optim.nonlinear.scalar.gradient.NonLinearConjugateGradientOptimizer:doOptimize
+1,org.apache.commons.math3.optim.nonlinear.scalar.noderiv.CMAESOptimizer:doOptimize

@@ -226,7 +226,7 @@ class Optimizer(object):
         for component in self._components_dictionary.values():
             #probs.append(component.get_success_probability())
             probs.append(component.get_failure_probability())
-        return entropy(probs)
+        return entropy(list(operations.normilize(probs)))
 
     def calculate_test_entropy(self, test, performed_tests, diagnoser_client):
         '''
@@ -333,16 +333,19 @@ class Optimizer(object):
         general_entropy = self.calculate_general_entropy()
 
         for round in range(1, rounds + 1):
-            current_best_information_gain = 0
+            current_best_information_gain = 100000
             current_best_test = 0
             selected_key = ''
             for key in tests_buffer.keys():
                 test = tests_buffer[key]
-                calculate_test_entropy = test.calculate_test_entropy(B)
+                #calculate_test_entropy = test.calculate_test_entropy(B)
+                calculate_test_entropy = operations.calculate_test_analytic_entropy(key,self._tests_dictionary,self._components_dictionary,B)
                 test_Ptf = test.get_test_Ptf()
                 if debug==1:
                     print('Test: ', key,' Ent:' ,calculate_test_entropy)
-                current_information_gain = general_entropy - calculate_test_entropy
+
+                #current_information_gain = general_entropy - calculate_test_entropy
+                current_information_gain = calculate_test_entropy
                 if debug == 1:
                     print('Test: ',key,' general_entropy: ',general_entropy,' information_gain: ',current_information_gain)
                 if current_information_gain > current_best_information_gain:
@@ -437,7 +440,7 @@ def main():
             else:
                 test_dict[test] = models.Test(test, test_comp_dict[test])
         # print(test,test_dict[test].get_failure_probability(),operations.calculate_failure_probability(test_dict[test]))
-    #selection_algorithm =['Coverage','MaxFailureProbability','AnalyticInformationGain']
+    #selection_algorithm =['Coverage','MaxFailureProbability','AnalyticInformationGain','DiagnoserInformationGain']
     selection_algorithm = ['AnalyticInformationGain']
     data_folder = "generated_data_sets"
     result_folder ="generated_test_results"
@@ -445,7 +448,7 @@ def main():
     data_set_size = 20
     #TODO:Remove comment
     #for i in range(0, data_set_count):
-    #    data_extraction.generate_test_data_set(test_dict, bugged_components_dict, test_outcomes_dict, data_set_size, 1, i, False)
+    #    data_extraction.generate_test_data_set(test_dict, bugged_components_dict, test_outcomes_dict, data_set_size, 1, i, False,10000)
 
     test_result_header = 'test_run_id,test_run_date,round, failed_test_by_definition, base_entropy_apriory, algorithm, failed_till_now, chosen_test,round_entropy'
     for filename in os.listdir('generated_data_sets'):

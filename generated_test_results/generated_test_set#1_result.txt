@@ -1,0 +1,21 @@
+test_run_id,test_run_date,round, failed_test_by_definition, base_entropy_apriory, algorithm, failed_till_now, chosen_test,round_entropy
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,1,0,4.821127664427535,DiagnoserInformationGain,0,org.apache.commons.math3.dfp.DfpTest:testSinh,4.821127664427535
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,2,0,4.821127664427535,DiagnoserInformationGain,0,org.apache.commons.math3.random.Well44497aTest:testNextUniformUniformNegaiveBounds,4.821127664427535
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,3,0,4.821127664427535,DiagnoserInformationGain,0,org.apache.commons.math3.complex.ComplexTest:testDivideNaNInf,4.821127664427535
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,4,0,4.821127664427535,DiagnoserInformationGain,0,org.apache.commons.math3.stat.regression.OLSMultipleLinearRegressionTest:testYVariance,4.821127664427535
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,5,0,4.821127664427535,DiagnoserInformationGain,0,org.apache.commons.math3.ode.nonstiff.GraggBulirschStoerIntegratorTest:testIssue596,4.821127664427535
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,6,0,4.821127664427535,DiagnoserInformationGain,0,org.apache.commons.math3.random.EmpiricalDistributionTest:testGeneratorConfig,4.821127664427535
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,7,0,4.821127664427535,DiagnoserInformationGain,0,org.apache.commons.math3.random.RandomDataGeneratorTest:testNextUniformUniformPositiveBounds,4.821127664427535
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,8,0,4.821127664427535,DiagnoserInformationGain,0,org.apache.commons.math3.random.Well44497aTest:testNextZipf,4.821127664427535
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,9,0,4.821127664427535,DiagnoserInformationGain,0,org.apache.commons.math3.random.RandomDataGeneratorTest:testNextLongNegativeRange,4.821127664427535
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,10,0,4.821127664427535,DiagnoserInformationGain,0,org.apache.commons.math3.random.Well512aTest:testReferenceCode,4.821127664427535
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,11,0,4.821127664427535,DiagnoserInformationGain,0,org.apache.commons.math3.stat.descriptive.moment.FourthMomentTest:testSerial,4.821127664427535
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,12,0,4.821127664427535,DiagnoserInformationGain,0,org.apache.commons.math3.fraction.BigFractionFormatTest:testFormatNegative,4.821127664427535
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,13,0,4.821127664427535,DiagnoserInformationGain,0,org.apache.commons.math3.random.Well19937cTest:testNextSecureIntNegativeRange,4.821127664427535
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,14,0,4.821127664427535,DiagnoserInformationGain,0,org.apache.commons.math3.stat.descriptive.moment.FirstMomentTest:testSerial,4.821127664427535
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,15,1,4.821127664427535,DiagnoserInformationGain,1,org.apache.commons.math3.optim.nonlinear.scalar.noderiv.CMAESOptimizerTest:testCigTab,4.794935190021983
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,16,1,4.794935190021983,DiagnoserInformationGain,1,org.apache.commons.math3.optim.nonlinear.scalar.noderiv.CMAESOptimizerTest:testMaximize,4.532110228989168
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,17,1,4.532110228989168,DiagnoserInformationGain,1,org.apache.commons.math3.optim.nonlinear.scalar.noderiv.CMAESOptimizerTest:testTwoAxes,4.355926046208948
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,18,1,4.355926046208948,DiagnoserInformationGain,1,org.apache.commons.math3.optim.nonlinear.scalar.noderiv.CMAESOptimizerTest:testCigarWithBoundaries,4.233096079968123
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,19,1,4.233096079968123,DiagnoserInformationGain,1,org.apache.commons.math3.optim.nonlinear.scalar.noderiv.CMAESOptimizerTest:testEllipse,4.142675213789356
+9e738e24-a24f-4b69-ac72-ad2f91b8c239,2019-02-12 04:43:57.005000,20,0,4.142675213789356,DiagnoserInformationGain,1,org.apache.commons.math3.linear.QRSolverTest:testRank,4.142674068396329

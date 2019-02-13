@@ -96,7 +96,7 @@ def generate_data_set_input_files(execution_result_file,component_probabilities_
     #print(test_list)
 
 
-def generate_test_data_set(test_dict,bugged_components_dict,test_outcomes_dict,data_set_size,bugged_components_count,data_set_num,debug=False):
+def generate_test_data_set(test_dict,bugged_components_dict,test_outcomes_dict,data_set_size,bugged_components_count,data_set_num,debug=False,max_test_components=10000):
     chosen_comp = []
     failed_tests = []
     success_tests = []
@@ -122,7 +122,7 @@ def generate_test_data_set(test_dict,bugged_components_dict,test_outcomes_dict,d
         print('neutral_test_count: '+str(neutral_test_count),' failed_tests_count: '+str(failed_tests_count),' success_tests_count: '+str(success_tests_count))
 
     for tst in test_dict:
-        if len(list(set(chosen_comp).intersection(set(test_dict[tst].get_components_list()))))>0:
+        if len(list(set(chosen_comp).intersection(set(test_dict[tst].get_components_list()))))>0 and len(test_dict[tst].get_components_list())<max_test_components:
             #if debug == True:
             #    print(tst)
             if test_outcomes_dict[tst]==0:

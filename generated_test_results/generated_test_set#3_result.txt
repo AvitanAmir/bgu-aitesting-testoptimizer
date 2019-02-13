@@ -1,0 +1,15 @@
+test_run_id,test_run_date,round, failed_test_by_definition, base_entropy_apriory, algorithm, failed_till_now, chosen_test,round_entropy
+a36f1180-a5a6-4479-94fe-c7df1721e39a,2019-02-12 04:44:10.518000,1,0,4.252635710843677,DiagnoserInformationGain,0,org.apache.commons.math3.linear.ArrayFieldVectorTest:testOuterProduct,4.252635710843677
+a36f1180-a5a6-4479-94fe-c7df1721e39a,2019-02-12 04:44:10.518000,2,0,4.252635710843677,DiagnoserInformationGain,0,org.apache.commons.math3.complex.ComplexFormatTest:testDifferentImaginaryChar,4.252635710843677
+a36f1180-a5a6-4479-94fe-c7df1721e39a,2019-02-12 04:44:10.518000,3,0,4.252635710843677,DiagnoserInformationGain,0,org.apache.commons.math3.ode.nonstiff.AdamsMoultonIntegratorTest:polynomial,4.252635710843677
+a36f1180-a5a6-4479-94fe-c7df1721e39a,2019-02-12 04:44:10.518000,4,0,4.252635710843677,DiagnoserInformationGain,0,org.apache.commons.math3.fraction.FractionTest:testAdd,4.252635710843677
+a36f1180-a5a6-4479-94fe-c7df1721e39a,2019-02-12 04:44:10.518000,5,0,4.252635710843677,DiagnoserInformationGain,0,org.apache.commons.math3.geometry.euclidean.threed.LineTest:testClosest,4.252635710843677
+a36f1180-a5a6-4479-94fe-c7df1721e39a,2019-02-12 04:44:10.518000,6,0,4.252635710843677,DiagnoserInformationGain,0,org.apache.commons.math3.complex.FrenchComplexFormatTest:testParseNegativeReal,4.252635710843677
+a36f1180-a5a6-4479-94fe-c7df1721e39a,2019-02-12 04:44:10.518000,7,0,4.252635710843677,DiagnoserInformationGain,0,org.apache.commons.math3.distribution.TriangularDistributionTest:testPreconditions3,4.252635710843677
+a36f1180-a5a6-4479-94fe-c7df1721e39a,2019-02-12 04:44:10.518000,8,0,4.252635710843677,DiagnoserInformationGain,0,org.apache.commons.math3.optimization.univariate.BrentOptimizerTest:testQuinticMin,4.252635710843677
+a36f1180-a5a6-4479-94fe-c7df1721e39a,2019-02-12 04:44:10.518000,9,0,4.252635710843677,DiagnoserInformationGain,0,org.apache.commons.math3.util.ResizableDoubleArrayTest:testAddElements,4.252635710843677
+a36f1180-a5a6-4479-94fe-c7df1721e39a,2019-02-12 04:44:10.518000,10,0,4.252635710843677,DiagnoserInformationGain,0,org.apache.commons.math3.distribution.PascalDistributionTest:testDegenerate0,4.252635710843677
+a36f1180-a5a6-4479-94fe-c7df1721e39a,2019-02-12 04:44:10.518000,11,0,4.252635710843677,DiagnoserInformationGain,0,org.apache.commons.math3.random.RandomDataGeneratorTest:testNextLongIAE,4.252635710843677
+a36f1180-a5a6-4479-94fe-c7df1721e39a,2019-02-12 04:44:10.518000,12,0,4.252635710843677,DiagnoserInformationGain,0,org.apache.commons.math3.optimization.fitting.GaussianFitterTest:testFit01,4.252635710843677
+a36f1180-a5a6-4479-94fe-c7df1721e39a,2019-02-12 04:44:10.518000,13,0,4.252635710843677,DiagnoserInformationGain,0,org.apache.commons.math3.random.Well512aTest:testNextFloatDirect,4.252635710843677
+a36f1180-a5a6-4479-94fe-c7df1721e39a,2019-02-12 04:44:10.518000,14,0,4.252635710843677,DiagnoserInformationGain,0,org.apache.commons.math3.complex.ComplexTest:testDivide,4.252635710843677

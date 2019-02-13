@@ -1,0 +1,16 @@
+test_run_id,test_run_date,round, failed_test_by_definition, base_entropy_apriory, algorithm, failed_till_now, chosen_test,round_entropy
+3759b7d0-ad45-4f99-92c3-8068c59b0473,2019-02-12 04:44:04.741000,1,0,3.961242172883956,DiagnoserInformationGain,0,org.apache.commons.math3.random.AbstractRandomGeneratorTest:testReseed,3.961242172883956
+3759b7d0-ad45-4f99-92c3-8068c59b0473,2019-02-12 04:44:04.741000,2,0,3.961242172883956,DiagnoserInformationGain,0,org.apache.commons.math3.optimization.general.GaussNewtonOptimizerTest:testCircleFittingBadInit,3.961242172883956
+3759b7d0-ad45-4f99-92c3-8068c59b0473,2019-02-12 04:44:04.741000,3,0,3.961242172883956,DiagnoserInformationGain,0,org.apache.commons.math3.linear.RealVectorTest:testWalkInDefaultOrderChangingVisitor3,3.961242172883956
+3759b7d0-ad45-4f99-92c3-8068c59b0473,2019-02-12 04:44:04.741000,4,0,3.961242172883956,DiagnoserInformationGain,0,org.apache.commons.math3.random.BitsStreamGeneratorTest:testNextSecureLongNegativeToPositiveRange,3.961242172883956
+3759b7d0-ad45-4f99-92c3-8068c59b0473,2019-02-12 04:44:04.741000,5,0,3.961242172883956,DiagnoserInformationGain,0,org.apache.commons.math3.stat.descriptive.rank.PercentileTest:testWeightedConsistency,3.961242172883956
+3759b7d0-ad45-4f99-92c3-8068c59b0473,2019-02-12 04:44:04.741000,6,0,3.961242172883956,DiagnoserInformationGain,0,org.apache.commons.math3.stat.inference.TestUtilsTest:testChiSquare,3.961242172883956
+3759b7d0-ad45-4f99-92c3-8068c59b0473,2019-02-12 04:44:04.741000,7,0,3.961242172883956,DiagnoserInformationGain,0,org.apache.commons.math3.util.FastMathStrictComparisonTest:test1[34],3.961242172883956
+3759b7d0-ad45-4f99-92c3-8068c59b0473,2019-02-12 04:44:04.741000,8,0,3.961242172883956,DiagnoserInformationGain,0,org.apache.commons.math3.optimization.general.MinpackTest:testMinpackPowellSingular,3.961242172883956
+3759b7d0-ad45-4f99-92c3-8068c59b0473,2019-02-12 04:44:04.741000,9,0,3.961242172883956,DiagnoserInformationGain,0,org.apache.commons.math3.linear.RealVectorFormatTest:testForgottenPrefix,3.961242172883956
+3759b7d0-ad45-4f99-92c3-8068c59b0473,2019-02-12 04:44:04.741000,10,0,3.961242172883956,DiagnoserInformationGain,0,org.apache.commons.math3.stat.inference.TTestTest:testSmallSamples,3.961242172883956
+3759b7d0-ad45-4f99-92c3-8068c59b0473,2019-02-12 04:44:04.741000,11,0,3.961242172883956,DiagnoserInformationGain,0,org.apache.commons.math3.complex.ComplexTest:testScalarSubtractNaN,3.961242172883956
+3759b7d0-ad45-4f99-92c3-8068c59b0473,2019-02-12 04:44:04.741000,12,0,3.961242172883956,DiagnoserInformationGain,0,org.apache.commons.math3.analysis.polynomials.PolynomialsUtilsTest:testChebyshevDifferentials,3.961242172883956
+3759b7d0-ad45-4f99-92c3-8068c59b0473,2019-02-12 04:44:04.741000,13,0,3.961242172883956,DiagnoserInformationGain,0,org.apache.commons.math3.complex.ComplexTest:testSqrtImaginaryNegative,3.961242172883956
+3759b7d0-ad45-4f99-92c3-8068c59b0473,2019-02-12 04:44:04.741000,14,0,3.961242172883956,DiagnoserInformationGain,0,org.apache.commons.math3.analysis.function.LogisticTest:testParametricUsage4,3.961242172883956
+3759b7d0-ad45-4f99-92c3-8068c59b0473,2019-02-12 04:44:04.741000,15,0,3.961242172883956,DiagnoserInformationGain,0,org.apache.commons.math3.random.ValueServerTest:testFill,3.961242172883956
