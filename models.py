@@ -96,15 +96,20 @@ class Test(object):
         prob_prod_sum = 0
         component_count = len(probs)
         #comp_id_list =range(1, component_count + 1)
-        for k in range(1, component_count + 1):
+        max_k = 5
+        for k in xrange(1, max_k+1):
             #TODO: is it pow((-1 * B), k-1) or pow((-1 * B), k)?
             Bpower = pow((-1 * B), k)
             #subsets = list(itertools.combinations(comp_id_list, k))
-            subset_probs = list(itertools.combinations(probs, k))
+            #subset_probs = list(itertools.combinations(probs, k))
             prob_prod_sum = 0
-            for j in range(0, len(subset_probs)):
-                prob_prod_sum += np.prod(np.array(subset_probs[j]))
+            #for j in range(0, len(subset_probs)):
+            #    prob_prod_sum += np.prod(np.array(subset_probs[j]))
+            prob_prod_sum = reduce(np.add, itertools.imap(lambda subset_prob: np.prod(np.array(subset_prob)),
+                                                          itertools.combinations(probs, k)), 0.0)
             PtF += Bpower * prob_prod_sum
+            #print(k,PtF)
+
         PtF = -1 * PtF
         return PtF
     '''    
@@ -127,13 +132,13 @@ class Test(object):
         return (1- self.calculate_test_failure_probability(B))
 
     '''P(t | c)means the probability of t to pass given c is the faulty component. Therefore,
-    P(t=F | c) = 1 if C t else 0.'''
+    P(t=F | c) = B if C t else 0.'''
     def calculate_test_failure_probability_given_component(self,comp,is_faulty,B):
         test_failure_probability = 0
         if is_faulty ==1:
             if comp in self.get_components_list():
-                #TODO: it isn't B?
-                test_failure_probability = 1
+                #TODO: it isn't B or 1?
+                test_failure_probability = B
             else:
                 test_failure_probability = 0
         else : #is_faulty ==0

@@ -109,7 +109,7 @@ def generate_test_data_set(test_dict,bugged_components_dict,test_outcomes_dict,d
         if c not in chosen_comp:
             chosen_comp.append(c)
     if debug==True:
-        for i in range(0,len(chosen_comp)):
+        for i in xrange(0,len(chosen_comp)):
             print('Component #'+str(i+1)+': ',chosen_comp[i])
 
     failed_tests_percent = 0.25

@@ -106,14 +106,15 @@ def get_tests_for_max_covering(test_dict,max_tests_amount):
     component_list =[]
     test_list = []
     chosen_test = ''
-    for round in range(1, max_tests_amount + 1):
+    for round in xrange(1, max_tests_amount + 1):
         for tst in test_dict:
             if tst not in test_list:
                 component_count = len(list(set(component_list).union(set(test_dict[tst].get_components_list()))))
                 if component_count> len(list(set(list(set(component_list).union(set(test_dict[test_name].get_components_list())))))):
                     test_name = tst
-        test_list.append(test_name)
-        component_list.extend(list(set(test_dict[test_name].get_components_list())))
+        if test_name not in test_list:
+            test_list.append(test_name)
+            component_list.extend(list(set(test_dict[test_name].get_components_list())))
         #complist = list(set(component_list))
         #print(test_list)
         #print("covered components: ",len(complist))
@@ -123,31 +124,30 @@ def get_tests_for_max_covering(test_dict,max_tests_amount):
 '''Analytic algorithm'''
 '''E(t=P)=-cC Sum(log(P(c|t=P))P(c|t=P))'''
 def calculate_test_analytic_pass_entropy(test,test_dict,comp_dict,B,Ptf):
-    entropy_omega_pass = 0
+    entropy_omega_pass = 0.0
     test_comp_pass_probs =[]
     for comp in comp_dict:
-        #if comp in test_dict[test].get_components_list():
-            test_comp_pass_probs.append(calculate_component_pass_probability_given_test(test,comp,test_dict,comp_dict,B,Ptf))
-        #else:
-        #    test_comp_pass_probs.append(comp_dict[comp].get_success_probability())
-
-    entropy_omega_pass = entropy(list(normilize(test_comp_pass_probs)))
-
+            #test_comp_pass_probs.append(calculate_component_pass_probability_given_test(test,comp,test_dict,comp_dict,B,Ptf))
+            pct = calculate_component_pass_probability_given_test(test, comp, test_dict, comp_dict, B, Ptf)
+            if pct != 0.0:
+                entropy_omega_pass = entropy_omega_pass + log(pct,2)*pct
+    #ORG
+    #entropy_omega_pass = entropy(list(normilize(test_comp_pass_probs)))
+    entropy_omega_pass = -1*entropy_omega_pass
     return entropy_omega_pass
 
 '''E(t=F)=-cC Sum(log(P(c|t=F))P(c|t=F))'''
 def calculate_test_analytic_failure_entropy(test,test_dict,comp_dict,B,Ptf):
-    entropy_omega_failure = 0
+    entropy_omega_failure = 0.0
     test_comp_fail_probs = []
     for comp in comp_dict:
-        #if comp in test_dict[test].get_components_list():
-            test_comp_fail_probs.append(
-                calculate_component_failure_probability_given_test(test, comp, test_dict, comp_dict, B, Ptf))
-        #else:
-        #    test_comp_fail_probs.append(comp_dict[comp].get_failure_probability())
-
-    entropy_omega_failure = entropy(list(normilize(test_comp_fail_probs)))
-
+            #test_comp_fail_probs.append(calculate_component_failure_probability_given_test(test, comp, test_dict, comp_dict, B, Ptf))
+            pct = calculate_component_failure_probability_given_test(test, comp, test_dict, comp_dict, B, Ptf)
+            if pct !=0.0:
+                entropy_omega_failure = entropy_omega_failure + log(pct, 2) * pct
+    #ORG
+    #entropy_omega_failure = entropy(list(normilize(test_comp_fail_probs)))
+    entropy_omega_failure = -1 * entropy_omega_failure
     return entropy_omega_failure
 
 '''E(Omega| t) = -(P(t=P)*E(t=P) + P(t=F)*E(t=F)).'''
@@ -158,8 +158,8 @@ def calculate_test_analytic_entropy(test,test_dict,comp_dict, B):
     pEnt = calculate_test_analytic_pass_entropy(test,test_dict,comp_dict,B,Ptf)
     fEnt = calculate_test_analytic_failure_entropy(test,test_dict,comp_dict,B,Ptf)
     #ORG
-    #test_entropy =  -1*((1- Ptf)*pEnt+ Ptf*fEnt)
-    test_entropy = ((1 - Ptf) * pEnt + Ptf * fEnt)
+    test_entropy =  -1*((1- Ptf)*pEnt+ Ptf*fEnt)
+    #test_entropy = ((1 - Ptf) * pEnt + Ptf * fEnt)
     print('Ptf: ',Ptf,' pEnt: ',pEnt,' fEnt: ',fEnt,' test_entropy: ',test_entropy)
     return test_entropy
 
@@ -187,3 +187,22 @@ def calculate_component_pass_probability_given_test(test,comp,test_dict,comp_dic
 
     #print('Pct:', pct)
     return pct
+
+
+def get_analytic_updates_priors(test, state, test_dict, comp_dict,B,Ptf):
+    new_priors_dictionary = {}
+    comp_prob_dict = {}
+    new_comp_prior = 0.0
+    fail_prob = 0.0
+    for comp in test.get_components_list():
+        if state == 1:
+            new_comp_prior = calculate_component_failure_probability_given_test(test.get_name(),comp,test_dict,comp_dict,B,Ptf)
+            fail_prob = new_comp_prior
+            new_priors_dictionary[comp] = fail_prob
+        else:
+            new_comp_prior = calculate_component_pass_probability_given_test(test.get_name(),comp,test_dict,comp_dict,B,Ptf)
+            fail_prob = 1 - new_comp_prior
+            #fail_prob = new_comp_prior
+            new_priors_dictionary[comp]= fail_prob
+
+    return new_priors_dictionary
