@@ -2,8 +2,8 @@ import pandas as pd
 import models
 import operations
 import random
-import os.path
-
+import os
+import fileinput
 def generate_data_set_input_files(execution_result_file,component_probabilities_file,target_directory_result):
     test_info = []
     component_probabilities=[]
@@ -222,3 +222,14 @@ def write_test_result_data(file_path,test_result,test_result_header,init_require
         with open(file_path, 'a') as f:
             f.write(test_result + os.linesep)
         f.close()
+
+
+def remove_empty_lines(file_path,new_file_path):
+    if not os.path.isfile(file_path):
+        print("{} does not exist ".format(file_path))
+        return
+    with open(file_path) as filehandle:
+        lines = filehandle.readlines()
+    with open(new_file_path, 'w') as filehandle:
+        for l in lines:
+            filehandle.write(l.replace("\n",""))

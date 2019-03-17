@@ -407,12 +407,13 @@ class Optimizer(object):
 
                 data_extraction.write_test_result_data(report_file_path, test_result, '', False, debug)
 def main():
-    '''data_extraction.generate_data_set_input_files('D:\ST\Thesis\LATEST\DataSet\Math_6.txt',
+    '''data_extraction.generate_data_set_input_files('D:\ST\Thesis\LATEST\DataSet\Math_21.txt',
                                                   'D:\ST\Thesis\LATEST\DataSet\probs.csv' ,
-                                                  'D:\ST\Thesis\LATEST\DataSet\DS1' )
+                                                  'D:\ST\Thesis\LATEST\DataSet\DS7' )
     return
-'''
-
+  '''
+    #data_extraction.remove_empty_lines('D:/ST/Thesis/LATEST/DataSet/Results/DS2/generated_test_set#3_result.txt','D:/ST/Thesis/LATEST/DataSet/Results/DS2/generated_test_set#3_result.csv')
+    #return
     component_probabilities_df = pd.read_csv('data/DS1/ComponentProbabilities.csv')
     test_components_df = pd.read_csv('data/DS1/TestComponents.csv')
     test_outcomes_df = pd.read_csv('data/DS1/TestOutcomes.csv')
@@ -453,15 +454,15 @@ def main():
             else:
                 test_dict[test] = models.Test(test, test_comp_dict[test])
         # print(test,test_dict[test].get_failure_probability(),operations.calculate_failure_probability(test_dict[test]))
-    #selection_algorithm =['Coverage','MaxFailureProbability','AnalyticInformationGain','DiagnoserInformationGain']
-    selection_algorithm = ['Coverage','MaxFailureProbability','DiagnoserInformationGain','AnalyticInformationGain']
+    selection_algorithm =['Coverage','MaxFailureProbability','AnalyticInformationGain','DiagnoserInformationGain']
+    #selection_algorithm = ['MaxFailureProbability']
     data_folder = "generated_data_sets"
     result_folder ="generated_test_results"
     data_set_count = 5
-    data_set_size = 30
+    data_set_size = 40
     #TODO:Remove comment
-    #for i in xrange(0, data_set_count):
-    #    data_extraction.generate_test_data_set(test_dict, bugged_components_dict, test_outcomes_dict, data_set_size, 1, i, False,10000)
+    for i in xrange(0, data_set_count):
+        data_extraction.generate_test_data_set(test_dict, bugged_components_dict, test_outcomes_dict, data_set_size, 1, i, False,10000)
 
     #return
     test_result_header = 'test_run_id,test_run_date,round, failed_test_by_definition, base_entropy_apriory, algorithm, failed_till_now, chosen_test,round_entropy'
@@ -536,7 +537,7 @@ def main():
                 else:
                     test_outcomes_dict_filtered[t]=True
 
-            max_tests_amount = 30
+            max_tests_amount = 40
             if algo_run=='Coverage':
                 failed_tests_till_now=0
                 covering_tests = operations.get_tests_for_max_covering(test_dict_filtered, max_tests_amount)
@@ -561,7 +562,7 @@ def main():
                     if test_tup[0] in test_outcomes_dict_filtered:
                         print('Round:', round, ' Test:', test_tup[0], test_tup[1], test_outcomes_dict[test_tup[0]])
                         t_outcome = 0
-                        if test_outcomes_dict[test_tup[0]] == 0:
+                        if test_outcomes_dict_filtered[test_tup[0]] == 0:
                             failed_tests_till_now = failed_tests_till_now + 1
                             t_outcome = 1
                         test_result = str(test_run) + ',' + str(test_run_date) + ',' + str(round) + ',' + str(
