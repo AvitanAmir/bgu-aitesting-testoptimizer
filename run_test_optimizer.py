@@ -211,13 +211,15 @@ class Optimizer(object):
         for index in range(0, len(priors_norms)):
             self._components_dictionary[keys[index]].set_failure_probability(priors_norms[index])
 
-    def update_components_dictionary(self,post_prob_test_run_dict):
+    def update_components_dictionary(self,post_prob_test_run_dict,perfom_normilize=True):
         for c in post_prob_test_run_dict:
             #print(self._components_dictionary[c].get_name(),': ',self._components_dictionary[c].get_failure_probability(),' , ',post_prob_test_run_dict[c] )
             self._components_dictionary[c].set_failure_probability(post_prob_test_run_dict[c])
-        self.normilize()
 
-    def calculate_general_entropy(self):
+        if perfom_normilize==True:
+            self.normilize()
+
+    def calculate_general_entropy(self,perfom_normilize=True):
         '''
         calculate the general entropy of all components.
         :return: general entropy
@@ -226,7 +228,10 @@ class Optimizer(object):
         for component in self._components_dictionary.values():
             #probs.append(component.get_success_probability())
             probs.append(component.get_failure_probability())
-        return entropy(list(operations.normilize(probs)))
+        if perfom_normilize==True:
+            return entropy(list(operations.normilize(probs)))
+        else:
+            return entropy(list(probs))
 
     def calculate_test_entropy(self, test, performed_tests, diagnoser_client):
         '''
@@ -304,10 +309,13 @@ class Optimizer(object):
                 print(" -- Selected tests till now: " + str(tests_IG))
                 general_entropy_org = general_entropy
                 general_entropy = self.calculate_general_entropy()
-
+                failed_comp_prob_list = '['
+                for failed_comp in self._bugged_components_dict:
+                    failed_comp_prob_list = failed_comp_prob_list + failed_comp + ':' + str(self._components_dictionary[failed_comp].get_failure_probability()) + '#'
+                failed_comp_prob_list = failed_comp_prob_list+']'
                 test_result = str(test_run) + ',' + str(test_run_date) + ',' + str(round) + ',' + str(
                     t_outcome) + ',' + str(general_entropy_org) + ',' + 'DiagnoserInformationGain' + ',' + str(
-                    failed_tests_till_now) + ',' + str(selected_key) + ',' + str(general_entropy)
+                    failed_tests_till_now) + ',' + str(selected_key) + ',' + str(general_entropy)+ ',' + failed_comp_prob_list
 
                 data_extraction.write_test_result_data(report_file_path, test_result, '', False, False)
 
@@ -330,7 +338,7 @@ class Optimizer(object):
             tests_buffer[key] = self._tests_dictionary[key]
         tests_by_information_gain = []
         tests_IG = []
-        general_entropy = self.calculate_general_entropy()
+        general_entropy = self.calculate_general_entropy(True)
 
         for round in range(1, rounds + 1):
             current_best_information_gain = 100000
@@ -369,8 +377,8 @@ class Optimizer(object):
                     failed_tests_till_now = failed_tests_till_now + 1
                 post_prob_test_run_dict = []
 
-                if fail_found:
-                    post_prob_test_run_dict =  operations.get_analytic_updates_priors(current_best_test, t_outcome,self._tests_dictionary, self._components_dictionary,B,current_best_test_Ptf)
+                #if fail_found:
+                post_prob_test_run_dict =  operations.get_analytic_updates_priors(current_best_test, t_outcome,self._tests_dictionary, self._components_dictionary,B,current_best_test_Ptf)
 
 
                 tests_by_information_gain.append(current_best_test)
@@ -380,30 +388,36 @@ class Optimizer(object):
                 print(' -- General Entropy: ' + str(general_entropy))
                 print(' -- Best IG: ' + str(current_best_information_gain))
                 print(' -- Till now fail found: '+str(fail_found))
+                #print(' ---failed comp prob: ' + str(self._components_dictionary['org.apache.commons.math3.dfp.Dfp:multiply'].get_failure_probability()))
                 # print(selected_key, post_prob_test_run_dict)
                 perform_test_norm = 0
-                if fail_found:
-                    if perform_test_norm ==1:
-                        keys = []
-                        priors = []
-                        for key in post_prob_test_run_dict:
-                            keys.append(key)
-                            priors.append(post_prob_test_run_dict[key])
+                #if fail_found:
+                if perform_test_norm ==1:
+                    keys = []
+                    priors = []
+                    for key in post_prob_test_run_dict:
+                        keys.append(key)
+                        priors.append(post_prob_test_run_dict[key])
 
-                        priors_norms = operations.normilize(priors)
-                        for index in range(0, len(priors_norms)):
-                            post_prob_test_run_dict[keys[index]]=priors_norms[index]
+                    priors_norms = operations.normilize(priors)
+                    for index in range(0, len(priors_norms)):
+                        post_prob_test_run_dict[keys[index]]=priors_norms[index]
 
-                    self.update_components_dictionary(post_prob_test_run_dict)
+                self.update_components_dictionary(post_prob_test_run_dict)
 
                 tests_buffer.pop(selected_key)
                 print(" -- Selected tests till now: " + str(tests_IG))
+                #print(' ---failed comp prob: ' + str(
+                #    self._components_dictionary['org.apache.commons.math3.dfp.Dfp:multiply'].get_failure_probability()))
                 general_entropy_org = general_entropy
-                general_entropy = self.calculate_general_entropy()
-
+                general_entropy = self.calculate_general_entropy(True)
+                failed_comp_prob_list ='['
+                for failed_comp in self._bugged_components_dict:
+                    failed_comp_prob_list = failed_comp_prob_list +  failed_comp + ':'+ str(self._components_dictionary[failed_comp].get_failure_probability())+'#'
+                failed_comp_prob_list = failed_comp_prob_list + ']'
                 test_result = str(test_run) + ',' + str(test_run_date) + ',' + str(round) + ',' + str(
                     t_outcome) + ',' + str(general_entropy_org) + ',' + 'AnalyticInformationGain' + ',' + str(
-                    failed_tests_till_now) + ',' + str(selected_key) + ','+ str(general_entropy)
+                    failed_tests_till_now) + ',' + str(selected_key) + ','+ str(general_entropy) + ',' + failed_comp_prob_list
 
                 data_extraction.write_test_result_data(report_file_path, test_result, '', False, debug)
 def main():
@@ -414,15 +428,16 @@ def main():
   '''
     #data_extraction.remove_empty_lines('D:/ST/Thesis/LATEST/DataSet/Results/DS2/generated_test_set#3_result.txt','D:/ST/Thesis/LATEST/DataSet/Results/DS2/generated_test_set#3_result.csv')
     #return
-    component_probabilities_df = pd.read_csv('data/DS1/ComponentProbabilities.csv')
-    test_components_df = pd.read_csv('data/DS1/TestComponents.csv')
-    test_outcomes_df = pd.read_csv('data/DS1/TestOutcomes.csv')
-    bugged_components_df = pd.read_csv('data/DS1/BuggedFiles.csv')
+    component_probabilities_df = pd.read_csv('data/DS5/ComponentProbabilities.csv')
+    test_components_df = pd.read_csv('data/DS5/TestComponents.csv')
+    test_outcomes_df = pd.read_csv('data/DS5/TestOutcomes.csv')
+    bugged_components_df = pd.read_csv('data/DS5/BuggedFiles.csv')
     comp_dict = {}
     test_comp_dict = {}
     test_dict = {}
     test_outcomes_dict = {}
     bugged_components_dict = {}
+    include_faild_comp_prob = True
 
     for index, row in test_outcomes_df.iterrows():
         # print(row['TestName'], row['TestOutcome'])
@@ -454,18 +469,22 @@ def main():
             else:
                 test_dict[test] = models.Test(test, test_comp_dict[test])
         # print(test,test_dict[test].get_failure_probability(),operations.calculate_failure_probability(test_dict[test]))
-    selection_algorithm =['Coverage','MaxFailureProbability','AnalyticInformationGain','DiagnoserInformationGain']
-    #selection_algorithm = ['MaxFailureProbability']
+    #selection_algorithm =['Coverage','MaxFailureProbability','AnalyticInformationGain','DiagnoserInformationGain']
+    selection_algorithm = ['AnalyticInformationGain']
     data_folder = "generated_data_sets"
     result_folder ="generated_test_results"
     data_set_count = 5
     data_set_size = 40
     #TODO:Remove comment
-    for i in xrange(0, data_set_count):
-        data_extraction.generate_test_data_set(test_dict, bugged_components_dict, test_outcomes_dict, data_set_size, 1, i, False,10000)
+    #for i in xrange(0, data_set_count):
+    #    data_extraction.generate_test_data_set(test_dict, bugged_components_dict, test_outcomes_dict, data_set_size, 1, i, False,10000)
 
     #return
-    test_result_header = 'test_run_id,test_run_date,round, failed_test_by_definition, base_entropy_apriory, algorithm, failed_till_now, chosen_test,round_entropy'
+
+    test_result_header = 'test_run_id,test_run_date,round, failed_test_by_definition, base_entropy_apriory, algorithm, failed_till_now, chosen_test,round_entropy,failed_comp_probability'
+    if include_faild_comp_prob==True:
+        test_result_header = test_result_header +',failed_comp_probability'
+
     for filename in os.listdir('generated_data_sets'):
         file_to_open = os.path.join(data_folder, filename)
         result_file = os.path.splitext(filename)[0] + '_result.txt'
@@ -476,10 +495,10 @@ def main():
 
 
         for algo_run in selection_algorithm:
-            component_probabilities_df = pd.read_csv('data/DS1/ComponentProbabilities.csv')
-            test_components_df = pd.read_csv('data/DS1/TestComponents.csv')
-            test_outcomes_df = pd.read_csv('data/DS1/TestOutcomes.csv')
-            bugged_components_df = pd.read_csv('data/DS1/BuggedFiles.csv')
+            component_probabilities_df = pd.read_csv('data/DS5/ComponentProbabilities.csv')
+            test_components_df = pd.read_csv('data/DS5/TestComponents.csv')
+            test_outcomes_df = pd.read_csv('data/DS5/TestOutcomes.csv')
+            bugged_components_df = pd.read_csv('data/DS5/BuggedFiles.csv')
             comp_dict = {}
             test_comp_dict = {}
             test_dict = {}
@@ -550,7 +569,7 @@ def main():
                             t_outcome = 1
                         test_result = str(test_run) + ',' + str(test_run_date) + ',' + str(round) + ',' + str(
                             t_outcome) + ',' + '-' + ',' + 'Coverage' + ',' + str(
-                            failed_tests_till_now) + ',' + str(covering_tests[round - 1]) + ',' + '-'
+                            failed_tests_till_now) + ',' + str(covering_tests[round - 1]) + ',' + '-'+ ',' + '-'
                         data_extraction.write_test_result_data(file_to_write, test_result, '', False, False)
 
             if algo_run=='MaxFailureProbability':
@@ -567,13 +586,13 @@ def main():
                             t_outcome = 1
                         test_result = str(test_run) + ',' + str(test_run_date) + ',' + str(round) + ',' + str(
                             t_outcome) + ',' + '-' + ',' + 'MaxFailureProbability' + ',' + str(
-                            failed_tests_till_now) + ',' + test_tup[0] + ',' + '-'
+                            failed_tests_till_now) + ',' + test_tup[0] + ',' + '-'+ ',' + '-'
                         data_extraction.write_test_result_data(file_to_write, test_result, '', False, False)
             if algo_run =='DiagnoserInformationGain':
                 optimizer = Optimizer(comp_dict_filtered, test_outcomes_dict_filtered, test_dict_filtered, bugged_components_dict_filtered, max_tests_amount)
                 optimizer.find_best_tests(file_to_write,test_run,test_run_date)
             if algo_run=='AnalyticInformationGain':
-                B = 0.1
+                B = 0.2
                 optimizer = Optimizer(comp_dict_filtered, test_outcomes_dict_filtered, test_dict_filtered, bugged_components_dict_filtered, max_tests_amount)
                 optimizer.analytic_find_best_tests(B,file_to_write,test_run,test_run_date)
 

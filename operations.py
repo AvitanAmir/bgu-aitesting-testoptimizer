@@ -152,7 +152,7 @@ def calculate_test_analytic_failure_entropy(test,test_dict,comp_dict,B,Ptf):
 
 '''E(Omega| t) = -(P(t=P)*E(t=P) + P(t=F)*E(t=F)).'''
 def calculate_test_analytic_entropy(test,test_dict,comp_dict, B):
-    print(test_dict[test].get_name())
+    #print(test_dict[test].get_name())
     Ptf = test_dict[test].calculate_test_failure_probability(B)
     test_dict[test]._Ptf = Ptf
     pEnt = calculate_test_analytic_pass_entropy(test,test_dict,comp_dict,B,Ptf)
@@ -160,10 +160,10 @@ def calculate_test_analytic_entropy(test,test_dict,comp_dict, B):
     #ORG
     test_entropy =  -1*((1- Ptf)*pEnt+ Ptf*fEnt)
     #test_entropy = ((1 - Ptf) * pEnt + Ptf * fEnt)
-    print('Ptf: ',Ptf,' pEnt: ',pEnt,' fEnt: ',fEnt,' test_entropy: ',test_entropy)
+    #print('Ptf: ',Ptf,' pEnt: ',pEnt,' fEnt: ',fEnt,' test_entropy: ',test_entropy)
     return test_entropy
 
-''''P(c|t) = (P(t=p|c) *  P(c))/P(t)'''
+''''P(c|t) = (P(t=f|c) *  P(c))/P(t)'''
 def calculate_component_failure_probability_given_test(test,comp,test_dict,comp_dict,B,Ptf):
     test_failure_probability_given_component=test_dict[test].calculate_test_failure_probability_given_component(comp,1,B)*comp_dict[comp].get_failure_probability()
     test_failure_probability=Ptf
@@ -177,9 +177,10 @@ def calculate_component_failure_probability_given_test(test,comp,test_dict,comp_
 
 ''''P(c|t) = (P(t=p|c) *  P(c))/P(t)'''
 def calculate_component_pass_probability_given_test(test,comp,test_dict,comp_dict,B,Ptf):
-    test_pass_probability_given_component = test_dict[test].calculate_test_failure_probability_given_component(comp, 0, B) * (1 - comp_dict[comp].get_failure_probability())
+    #test_pass_probability_given_component = (test_dict[test].calculate_test_failure_probability_given_component(comp, 0, B)) * (comp_dict[comp].get_failure_probability())
+    test_pass_probability_given_component = (test_dict[test].calculate_test_failure_probability_given_component(comp, 0, B)) * (1 - comp_dict[comp].get_failure_probability())
     #test_pass_probability = (1 - self.calculate_test_failure_probability(B))
-    test_pass_probability = (1 - Ptf)
+    test_pass_probability = (1- Ptf)
     if test_pass_probability == 0.0:
         pct = 0
     else:
@@ -200,6 +201,7 @@ def get_analytic_updates_priors(test, state, test_dict, comp_dict,B,Ptf):
             fail_prob = new_comp_prior
             new_priors_dictionary[comp] = fail_prob
         else:
+            #org_comp_prior = comp_dict[comp].get_failure_probability()
             new_comp_prior = calculate_component_pass_probability_given_test(test.get_name(),comp,test_dict,comp_dict,B,Ptf)
             fail_prob = 1 - new_comp_prior
             #fail_prob = new_comp_prior
