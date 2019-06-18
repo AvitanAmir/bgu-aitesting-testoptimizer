@@ -481,7 +481,7 @@ def main():
 
     #return
 
-    test_result_header = 'test_run_id,test_run_date,round, failed_test_by_definition, base_entropy_apriory, algorithm, failed_till_now, chosen_test,round_entropy,failed_comp_probability'
+    test_result_header = 'test_run_id,test_run_date,round, failed_test_by_definition, base_entropy_apriory, algorithm, failed_till_now, chosen_test,round_entropy'
     if include_faild_comp_prob==True:
         test_result_header = test_result_header +',failed_comp_probability'
 
@@ -592,7 +592,7 @@ def main():
                 optimizer = Optimizer(comp_dict_filtered, test_outcomes_dict_filtered, test_dict_filtered, bugged_components_dict_filtered, max_tests_amount)
                 optimizer.find_best_tests(file_to_write,test_run,test_run_date)
             if algo_run=='AnalyticInformationGain':
-                B = 0.2
+                B = 0.1
                 optimizer = Optimizer(comp_dict_filtered, test_outcomes_dict_filtered, test_dict_filtered, bugged_components_dict_filtered, max_tests_amount)
                 optimizer.analytic_find_best_tests(B,file_to_write,test_run,test_run_date)
 

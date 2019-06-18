@@ -201,7 +201,7 @@ def get_analytic_updates_priors(test, state, test_dict, comp_dict,B,Ptf):
             fail_prob = new_comp_prior
             new_priors_dictionary[comp] = fail_prob
         else:
-            #org_comp_prior = comp_dict[comp].get_failure_probability()
+            org_comp_prior = comp_dict[comp].get_failure_probability()
             new_comp_prior = calculate_component_pass_probability_given_test(test.get_name(),comp,test_dict,comp_dict,B,Ptf)
             fail_prob = 1 - new_comp_prior
             #fail_prob = new_comp_prior
