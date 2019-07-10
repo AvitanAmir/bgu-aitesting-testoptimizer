@@ -158,8 +158,8 @@ def calculate_test_analytic_entropy(test,test_dict,comp_dict, B):
     pEnt = calculate_test_analytic_pass_entropy(test,test_dict,comp_dict,B,Ptf)
     fEnt = calculate_test_analytic_failure_entropy(test,test_dict,comp_dict,B,Ptf)
     #ORG
-    test_entropy =  -1*((1- Ptf)*pEnt+ Ptf*fEnt)
-    #test_entropy = ((1 - Ptf) * pEnt + Ptf * fEnt)
+    #test_entropy =  -1*((1- Ptf)*pEnt+ Ptf*fEnt)
+    test_entropy = ((1 - Ptf) * pEnt + Ptf * fEnt)
     #print('Ptf: ',Ptf,' pEnt: ',pEnt,' fEnt: ',fEnt,' test_entropy: ',test_entropy)
     return test_entropy
 

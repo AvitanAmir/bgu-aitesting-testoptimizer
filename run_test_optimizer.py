@@ -352,8 +352,8 @@ class Optimizer(object):
                 if debug==1:
                     print('Test: ', key,' Ent:' ,calculate_test_entropy)
 
-                #current_information_gain = general_entropy - calculate_test_entropy
-                current_information_gain = calculate_test_entropy
+                current_information_gain = general_entropy - calculate_test_entropy
+                #current_information_gain = calculate_test_entropy
                 if debug == 1:
                     print('Test: ',key,' general_entropy: ',general_entropy,' information_gain: ',current_information_gain)
                 if current_information_gain < current_best_information_gain:
@@ -378,6 +378,7 @@ class Optimizer(object):
                 post_prob_test_run_dict = []
 
                 #if fail_found:
+                #if t_outcome == 1:
                 post_prob_test_run_dict =  operations.get_analytic_updates_priors(current_best_test, t_outcome,self._tests_dictionary, self._components_dictionary,B,current_best_test_Ptf)
 
 
@@ -403,7 +404,7 @@ class Optimizer(object):
                     for index in range(0, len(priors_norms)):
                         post_prob_test_run_dict[keys[index]]=priors_norms[index]
 
-                self.update_components_dictionary(post_prob_test_run_dict)
+                self.update_components_dictionary(post_prob_test_run_dict,True)
 
                 tests_buffer.pop(selected_key)
                 print(" -- Selected tests till now: " + str(tests_IG))
