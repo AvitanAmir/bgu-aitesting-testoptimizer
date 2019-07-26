@@ -144,47 +144,6 @@ class DiagnoserClient(object):
                     new_priors_dictionary[component.get_name()] = comp_prob_dict[comp]
         return new_priors_dictionary
 
-'''
-    def get_analytic_updates_priors(self, test, state, tests, test_true_outcomes_dictionary, tests_bugged_components_dictionary, comp_dict,B,Ptf):
-        new_priors_dictionary = {}
-        comp_prob_dict = {}
-        union_tests = {}
-        union_components = {}
-        union_bugged_components = {}
-        union_test_true_outcomes = {}
-
-        for t in tests:
-            union_tests[t.get_name()] = t
-            union_test_true_outcomes[t.get_name()] = 0 if test_true_outcomes_dictionary[t.get_name()] else 1
-            for comp in t.get_components():
-                union_components[comp.get_name()] = comp
-
-        union_tests[test.get_name()] = test
-        union_test_true_outcomes[test.get_name()] = state
-        for comp in test.get_components():
-            union_components[comp.get_name()] = comp
-
-        for comp in union_components:
-            if comp in tests_bugged_components_dictionary:
-                union_bugged_components[comp] = comp
-
-        new_comp_prior = 0.0
-        fail_prob = 0.0
-        for c in test.get_components():
-            if state == 0:
-                new_comp_prior = test.calculate_component_failure_probability_given_test(c.get_name(),B,Ptf)
-                fail_prob = new_comp_prior
-                new_priors_dictionary[c.get_name()] = fail_prob
-            else:
-                new_comp_prior = test.calculate_component_pass_probability_given_test(c.get_name(),B,Ptf)
-                fail_prob = 1 - new_comp_prior
-                fail_prob = new_comp_prior
-                new_priors_dictionary[c.get_name()]= fail_prob
-
-        return new_priors_dictionary
-'''
-
-
 class Optimizer(object):
     '''
         Optimizer class responsible of finding best sub group of tests that will yield the most bug count.
@@ -348,7 +307,7 @@ class Optimizer(object):
                 test = tests_buffer[key]
                 #calculate_test_entropy = test.calculate_test_entropy(B)
                 calculate_test_entropy = operations.calculate_test_analytic_entropy(key,self._tests_dictionary,self._components_dictionary,B)
-                test_Ptf = test.get_test_Ptf()
+                test_Ptf = test.calculate_test_failure_probability(B)
                 if debug==1:
                     print('Test: ', key,' Ent:' ,calculate_test_entropy)
 
@@ -421,6 +380,84 @@ class Optimizer(object):
                     failed_tests_till_now) + ',' + str(selected_key) + ','+ str(general_entropy) + ',' + failed_comp_prob_list
 
                 data_extraction.write_test_result_data(report_file_path, test_result, '', False, debug)
+
+
+
+    def AnalyticMaxFailureProbability_find_best_tests(self,B,report_file_path,test_run,test_run_date):
+        '''
+        main algorithm of the optimizer to find the best sub set that will yield the max bug count.
+        :return: void
+        '''
+        failed_tests_till_now =0
+        fail_found = False
+        debug = 0
+        #diagnoser_client = DiagnoserClient()
+        tests_buffer = {}
+        rounds = min(len(self._tests_dictionary), self._max_tests_amount)
+
+        ignore_tests = []
+        failed_tests_till_now = 0
+        for round in range(1, rounds + 1):
+            test_tup = operations.get_test_with_max_failure_probability(self._tests_dictionary, ignore_tests,self._test_true_outcomes_dictionary)
+            ignore_tests.append(test_tup[0])
+            test_Ptf = self._tests_dictionary[test_tup[0]].calculate_test_failure_probability(B)
+            if test_tup[0] in self._test_true_outcomes_dictionary:
+                print('Round:', round, ' Test:', test_tup[0], test_tup[1], self._test_true_outcomes_dictionary[test_tup[0]])
+                t_outcome = 0
+                if self._test_true_outcomes_dictionary[test_tup[0]] == 0:
+                    failed_tests_till_now = failed_tests_till_now + 1
+                    t_outcome = 1
+                    fail_found = True
+                post_prob_test_run_dict = []
+                if fail_found:
+                    post_prob_test_run_dict =  operations.get_analytic_updates_priors(self._tests_dictionary[test_tup[0]], t_outcome,self._tests_dictionary, self._components_dictionary,B,test_Ptf)
+                    self.update_components_dictionary(post_prob_test_run_dict,True)
+                test_result = str(test_run) + ',' + str(test_run_date) + ',' + str(round) + ',' + str(
+                    t_outcome) + ',' + '-' + ',' + 'MaxFailureProbabilityAnalyticGain' + ',' + str(
+                    failed_tests_till_now) + ',' + test_tup[0] + ',' + '-' + ',' + '-'
+                data_extraction.write_test_result_data(report_file_path, test_result, '', False, False)
+
+    def DiagnoserMaxFailureProbability_find_best_tests(self,report_file_path,test_run,test_run_date):
+        '''
+        main algorithm of the optimizer to find the best sub set that will yield the max bug count.
+        :return: void
+        '''
+        failed_tests_till_now =0
+        fail_found = False
+        debug = 0
+        diagnoser_client = DiagnoserClient()
+        tests_buffer = {}
+        rounds = min(len(self._tests_dictionary), self._max_tests_amount)
+        ignore_tests = []
+        tests_run_till_now = []
+        failed_tests_till_now = 0
+        for round in range(1, rounds + 1):
+            test_tup = operations.get_test_with_max_failure_probability(self._tests_dictionary, ignore_tests,self._test_true_outcomes_dictionary)
+            ignore_tests.append(test_tup[0])
+            if test_tup[0] in self._test_true_outcomes_dictionary:
+                print('Round:', round, ' Test:', test_tup[0], test_tup[1], self._test_true_outcomes_dictionary[test_tup[0]])
+                t_outcome = 0
+                if self._test_true_outcomes_dictionary[test_tup[0]] == 0:
+                    failed_tests_till_now = failed_tests_till_now + 1
+                    t_outcome = 1
+                    fail_found = True
+                post_prob_test_run_dict = []
+                if fail_found:
+                    post_prob_test_run_dict = diagnoser_client.get_updates_priors(self._tests_dictionary[test_tup[0]], t_outcome,
+                                                                                  tests_run_till_now,
+                                                                                  self._test_true_outcomes_dictionary,
+                                                                                  self._bugged_components_dict,
+                                                                                  self._components_dictionary)
+
+                    self.update_components_dictionary(post_prob_test_run_dict,True)
+                    tests_run_till_now.append(self._tests_dictionary[test_tup[0]])
+
+                test_result = str(test_run) + ',' + str(test_run_date) + ',' + str(round) + ',' + str(
+                    t_outcome) + ',' + '-' + ',' + 'MaxFailureProbabilityDiagnoserGain' + ',' + str(
+                    failed_tests_till_now) + ',' + test_tup[0] + ',' + '-' + ',' + '-'
+                data_extraction.write_test_result_data(report_file_path, test_result, '', False, False)
+
+
 def main():
     '''data_extraction.generate_data_set_input_files('D:\ST\Thesis\LATEST\DataSet\Math_21.txt',
                                                   'D:\ST\Thesis\LATEST\DataSet\probs.csv' ,
@@ -470,8 +507,8 @@ def main():
             else:
                 test_dict[test] = models.Test(test, test_comp_dict[test])
         # print(test,test_dict[test].get_failure_probability(),operations.calculate_failure_probability(test_dict[test]))
-    #selection_algorithm =['Coverage','MaxFailureProbability','AnalyticInformationGain','DiagnoserInformationGain']
-    selection_algorithm = ['AnalyticInformationGain']
+    #selection_algorithm =['Coverage','MaxFailureProbability','AnalyticInformationGain','DiagnoserInformationGain','MaxFailureProbabilityAnalyticGain','MaxFailureProbabilityDiagnoserGain']
+    selection_algorithm = ['MaxFailureProbabilityAnalyticGain','MaxFailureProbability']
     data_folder = "generated_data_sets"
     result_folder ="generated_test_results"
     data_set_count = 5
@@ -589,6 +626,7 @@ def main():
                             t_outcome) + ',' + '-' + ',' + 'MaxFailureProbability' + ',' + str(
                             failed_tests_till_now) + ',' + test_tup[0] + ',' + '-'+ ',' + '-'
                         data_extraction.write_test_result_data(file_to_write, test_result, '', False, False)
+
             if algo_run =='DiagnoserInformationGain':
                 optimizer = Optimizer(comp_dict_filtered, test_outcomes_dict_filtered, test_dict_filtered, bugged_components_dict_filtered, max_tests_amount)
                 optimizer.find_best_tests(file_to_write,test_run,test_run_date)
@@ -596,6 +634,15 @@ def main():
                 B = 0.1
                 optimizer = Optimizer(comp_dict_filtered, test_outcomes_dict_filtered, test_dict_filtered, bugged_components_dict_filtered, max_tests_amount)
                 optimizer.analytic_find_best_tests(B,file_to_write,test_run,test_run_date)
+            if algo_run == 'MaxFailureProbabilityAnalyticGain':
+                B = 0.1
+                optimizer = Optimizer(comp_dict_filtered, test_outcomes_dict_filtered, test_dict_filtered,
+                                      bugged_components_dict_filtered, max_tests_amount)
+
+                optimizer.AnalyticMaxFailureProbability_find_best_tests(B, file_to_write, test_run, test_run_date)
+            if algo_run =='MaxFailureProbabilityDiagnoserGain':
+                optimizer = Optimizer(comp_dict_filtered, test_outcomes_dict_filtered, test_dict_filtered, bugged_components_dict_filtered, max_tests_amount)
+                optimizer.DiagnoserMaxFailureProbability_find_best_tests(file_to_write,test_run,test_run_date)
 
 
 if __name__ == "__main__":

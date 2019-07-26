@@ -96,7 +96,9 @@ class Test(object):
         prob_prod_sum = 0
         component_count = len(probs)
         #comp_id_list =range(1, component_count + 1)
-        max_k = 5
+        max_k = component_count
+        #TODO:Consider max_k change it - Amir M suggestion?
+        max_k=5
         for k in xrange(1, max_k+1):
             #TODO: is it pow((-1 * B), k-1) or pow((-1 * B), k)?
             Bpower = pow((-1 * B), k)
