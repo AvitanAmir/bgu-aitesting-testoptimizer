@@ -286,14 +286,22 @@ class Optimizer(object):
         failed_tests_till_now =0
         fail_found = False
         debug = 0
-        diagnoser_client = DiagnoserClient()
+        #diagnoser_client = DiagnoserClient()
         tests_buffer = {}
+
+        advance_log = 1
+        if advance_log == 1:
+            comp_prior_log ={}
+            round_updated_comp = {}
+            for key in self._components_dictionary.keys():
+                prior_log ={}
+                prior_log[0] = self._components_dictionary[key].get_failure_probability()
+                comp_prior_log[key] = prior_log
+
+
         rounds = min(len(self._tests_dictionary), self._max_tests_amount)
 
         for key in self._tests_dictionary.keys():
-            #TODO: Remove
-            #if len(self._tests_dictionary[key].get_components())>1 and len(self._tests_dictionary[key].get_components())<100:
-            #    tests_buffer[key] = self._tests_dictionary[key]
             tests_buffer[key] = self._tests_dictionary[key]
         tests_by_information_gain = []
         tests_IG = []
@@ -334,12 +342,15 @@ class Optimizer(object):
 
                 if t_outcome == 1:
                     failed_tests_till_now = failed_tests_till_now + 1
-                post_prob_test_run_dict = []
+                #post_prob_test_run_dict = []
 
                 #if fail_found:
                 #if t_outcome == 1:
                 post_prob_test_run_dict =  operations.get_analytic_updates_priors(current_best_test, t_outcome,self._tests_dictionary, self._components_dictionary,B,current_best_test_Ptf)
 
+
+                if advance_log == 1:
+                    round_updated_comp[round] = post_prob_test_run_dict
 
                 tests_by_information_gain.append(current_best_test)
                 tests_IG.append(selected_key)
@@ -364,6 +375,10 @@ class Optimizer(object):
                         post_prob_test_run_dict[keys[index]]=priors_norms[index]
 
                 self.update_components_dictionary(post_prob_test_run_dict,True)
+                if advance_log == 1:
+                    for key in self._components_dictionary.keys():
+                        prior_log[round] = self._components_dictionary[key].get_failure_probability()
+                        comp_prior_log[key][round] = prior_log[round]
 
                 tests_buffer.pop(selected_key)
                 print(" -- Selected tests till now: " + str(tests_IG))
@@ -381,7 +396,12 @@ class Optimizer(object):
 
                 data_extraction.write_test_result_data(report_file_path, test_result, '', False, debug)
 
-
+        if advance_log == 1:
+            log_file = report_file_path.replace('_result.txt','_comp_log.txt')
+            log_file = log_file.replace('generated_test_results', 'result_logs')
+            data_extraction.write_advance_log_result_data(log_file,comp_prior_log,1,debug)
+            log_file =log_file.replace('_comp_log.txt','_round_comp_log.txt')
+            data_extraction.write_advance_log_result_data(log_file, round_updated_comp, 2, debug)
 
     def AnalyticMaxFailureProbability_find_best_tests(self,B,report_file_path,test_run,test_run_date):
         '''
@@ -508,7 +528,7 @@ def main():
                 test_dict[test] = models.Test(test, test_comp_dict[test])
         # print(test,test_dict[test].get_failure_probability(),operations.calculate_failure_probability(test_dict[test]))
     #selection_algorithm =['Coverage','MaxFailureProbability','AnalyticInformationGain','DiagnoserInformationGain','MaxFailureProbabilityAnalyticGain','MaxFailureProbabilityDiagnoserGain']
-    selection_algorithm = ['MaxFailureProbabilityAnalyticGain','MaxFailureProbability']
+    selection_algorithm = ['AnalyticInformationGain','MaxFailureProbability']
     data_folder = "generated_data_sets"
     result_folder ="generated_test_results"
     data_set_count = 5

@@ -233,3 +233,32 @@ def remove_empty_lines(file_path,new_file_path):
     with open(new_file_path, 'w') as filehandle:
         for l in lines:
             filehandle.write(l.replace("\n",""))
+
+
+def write_advance_log_result_data(file_path,comp_log_dict,log_type,debug=False):
+        if log_type==1:
+            with open(file_path, 'w') as f:
+                for key in comp_log_dict.keys():
+                    str_comp_log =key +','
+                    for i in range(0,len(comp_log_dict[key])):
+                        if i in comp_log_dict[key].keys():
+                            str_comp_log+=str(comp_log_dict[key][i])+','
+                        else:
+                            str_comp_log+=','
+
+                    f.write(str_comp_log + os.linesep)
+            f.close()
+            dest_file_path = file_path.replace('.txt','.csv')
+            remove_empty_lines(file_path,dest_file_path)
+        if log_type == 2:
+            with open(file_path, 'w') as f:
+                for key in comp_log_dict.keys():
+                    str_comp_log = str(key) + ','
+                    for c in comp_log_dict[key].keys():
+                        str_comp_log+= str(c) +':'+ str(comp_log_dict[key][c]) + ','
+
+                    f.write(str_comp_log + os.linesep)
+            f.close()
+            dest_file_path = file_path.replace('.txt', '.csv')
+            remove_empty_lines(file_path, dest_file_path)
+
