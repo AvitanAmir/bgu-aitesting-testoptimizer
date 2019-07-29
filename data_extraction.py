@@ -213,17 +213,6 @@ def read_test_data_set(file_path,debug=False):
 
     return (failed_components,tests_set)
 
-def write_test_result_data(file_path,test_result,test_result_header,init_required,debug=False):
-    if init_required==True:
-        with open(file_path, 'w') as f:
-            f.write(test_result_header + os.linesep)
-        f.close()
-    else:
-        with open(file_path, 'a') as f:
-            f.write(test_result + os.linesep)
-        f.close()
-
-
 def remove_empty_lines(file_path,new_file_path):
     if not os.path.isfile(file_path):
         print("{} does not exist ".format(file_path))
@@ -233,6 +222,16 @@ def remove_empty_lines(file_path,new_file_path):
     with open(new_file_path, 'w') as filehandle:
         for l in lines:
             filehandle.write(l.replace("\n",""))
+
+def write_test_result_data(file_path,test_result,test_result_header,init_required,debug=False):
+    if init_required==True:
+        with open(file_path, 'w') as f:
+            f.write(test_result_header + os.linesep)
+        f.close()
+    else:
+        with open(file_path, 'a') as f:
+            f.write(test_result + os.linesep)
+        f.close()
 
 
 def write_advance_log_result_data(file_path,comp_log_dict,log_type,debug=False):

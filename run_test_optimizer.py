@@ -192,6 +192,20 @@ class Optimizer(object):
         else:
             return entropy(list(probs))
 
+    def calculate_test_base_general_entropy(self,perfom_normilize=True):
+        '''
+        calculate the general entropy of all components.
+        :return: general entropy
+        '''
+        probs = []
+        for test in self._tests_dictionary.values():
+            probs.append(test.get_failure_probability())
+        if perfom_normilize==True:
+            return entropy(list(operations.normilize(probs)))
+        else:
+            return entropy(list(probs))
+
+
     def calculate_test_entropy(self, test, performed_tests, diagnoser_client):
         '''
         calculate a specific test entropy as defined in the test 'calculate_test_entropy' method.
@@ -199,6 +213,16 @@ class Optimizer(object):
         :return: test entropy
         '''
         return operations.calculate_test_entropy(test, performed_tests, self._test_true_outcomes_dictionary, self._bugged_components_dict,
+                                                 diagnoser_client, self._components_dictionary)
+
+    def test_base_calculate_test_entropy(self, test, performed_tests, diagnoser_client):
+        '''
+        calculate a specific test entropy as defined in the test 'calculate_test_entropy' method.
+        :param test:
+        :return: test entropy
+        '''
+        return operations.test_base_calculate_test_entropy(test, performed_tests, self._test_true_outcomes_dictionary,
+                                                 self._bugged_components_dict,
                                                  diagnoser_client, self._components_dictionary)
 
     def find_best_tests(self,report_file_path,test_run,test_run_date):
@@ -220,6 +244,7 @@ class Optimizer(object):
         general_entropy = self.calculate_general_entropy()
 
         for round in range(1, rounds + 1):
+            round_run_date = datetime.datetime.now()
             current_best_information_gain = 0
             current_best_test = 0
             selected_key = ''
@@ -272,7 +297,7 @@ class Optimizer(object):
                 for failed_comp in self._bugged_components_dict:
                     failed_comp_prob_list = failed_comp_prob_list + failed_comp + ':' + str(self._components_dictionary[failed_comp].get_failure_probability()) + '#'
                 failed_comp_prob_list = failed_comp_prob_list+']'
-                test_result = str(test_run) + ',' + str(test_run_date) + ',' + str(round) + ',' + str(
+                test_result = str(test_run) + ',' + str(test_run_date) + ',' + str(round_run_date) + ',' + str(round) + ',' + str(
                     t_outcome) + ',' + str(general_entropy_org) + ',' + 'DiagnoserInformationGain' + ',' + str(
                     failed_tests_till_now) + ',' + str(selected_key) + ',' + str(general_entropy)+ ',' + failed_comp_prob_list
 
@@ -289,7 +314,7 @@ class Optimizer(object):
         #diagnoser_client = DiagnoserClient()
         tests_buffer = {}
 
-        advance_log = 1
+        advance_log = 0
         if advance_log == 1:
             comp_prior_log ={}
             round_updated_comp = {}
@@ -308,6 +333,7 @@ class Optimizer(object):
         general_entropy = self.calculate_general_entropy(True)
 
         for round in range(1, rounds + 1):
+            round_run_date = datetime.datetime.now()
             current_best_information_gain = 100000
             current_best_test = 0
             selected_key = ''
@@ -390,7 +416,7 @@ class Optimizer(object):
                 for failed_comp in self._bugged_components_dict:
                     failed_comp_prob_list = failed_comp_prob_list +  failed_comp + ':'+ str(self._components_dictionary[failed_comp].get_failure_probability())+'#'
                 failed_comp_prob_list = failed_comp_prob_list + ']'
-                test_result = str(test_run) + ',' + str(test_run_date) + ',' + str(round) + ',' + str(
+                test_result = str(test_run) + ',' + str(test_run_date) + ',' + str(round_run_date) + ',' + str(round) + ',' + str(
                     t_outcome) + ',' + str(general_entropy_org) + ',' + 'AnalyticInformationGain' + ',' + str(
                     failed_tests_till_now) + ',' + str(selected_key) + ','+ str(general_entropy) + ',' + failed_comp_prob_list
 
@@ -418,6 +444,7 @@ class Optimizer(object):
         ignore_tests = []
         failed_tests_till_now = 0
         for round in range(1, rounds + 1):
+            round_run_date = datetime.datetime.now()
             test_tup = operations.get_test_with_max_failure_probability(self._tests_dictionary, ignore_tests,self._test_true_outcomes_dictionary)
             ignore_tests.append(test_tup[0])
             test_Ptf = self._tests_dictionary[test_tup[0]].calculate_test_failure_probability(B)
@@ -432,7 +459,7 @@ class Optimizer(object):
                 if fail_found:
                     post_prob_test_run_dict =  operations.get_analytic_updates_priors(self._tests_dictionary[test_tup[0]], t_outcome,self._tests_dictionary, self._components_dictionary,B,test_Ptf)
                     self.update_components_dictionary(post_prob_test_run_dict,True)
-                test_result = str(test_run) + ',' + str(test_run_date) + ',' + str(round) + ',' + str(
+                test_result = str(test_run) + ',' + str(test_run_date) + ',' + str(round_run_date) + ',' + str(round) + ',' + str(
                     t_outcome) + ',' + '-' + ',' + 'MaxFailureProbabilityAnalyticGain' + ',' + str(
                     failed_tests_till_now) + ',' + test_tup[0] + ',' + '-' + ',' + '-'
                 data_extraction.write_test_result_data(report_file_path, test_result, '', False, False)
@@ -452,6 +479,7 @@ class Optimizer(object):
         tests_run_till_now = []
         failed_tests_till_now = 0
         for round in range(1, rounds + 1):
+            round_run_date = datetime.datetime.now()
             test_tup = operations.get_test_with_max_failure_probability(self._tests_dictionary, ignore_tests,self._test_true_outcomes_dictionary)
             ignore_tests.append(test_tup[0])
             if test_tup[0] in self._test_true_outcomes_dictionary:
@@ -472,11 +500,216 @@ class Optimizer(object):
                     self.update_components_dictionary(post_prob_test_run_dict,True)
                     tests_run_till_now.append(self._tests_dictionary[test_tup[0]])
 
-                test_result = str(test_run) + ',' + str(test_run_date) + ',' + str(round) + ',' + str(
+                test_result =  str(test_run) + ',' + str(test_run_date) + ',' + str(round_run_date) + ',' + str(round) + ',' + str(
                     t_outcome) + ',' + '-' + ',' + 'MaxFailureProbabilityDiagnoserGain' + ',' + str(
                     failed_tests_till_now) + ',' + test_tup[0] + ',' + '-' + ',' + '-'
                 data_extraction.write_test_result_data(report_file_path, test_result, '', False, False)
 
+    def analytic_test_base_find_best_tests(self,B,report_file_path,test_run,test_run_date):
+        '''
+        main algorithm of the optimizer to find the best sub set that will yield the max bug count.
+        :return: void
+        '''
+        failed_tests_till_now =0
+        fail_found = False
+        debug = 0
+        #diagnoser_client = DiagnoserClient()
+        tests_buffer = {}
+
+        advance_log = 0
+        if advance_log == 1:
+            comp_prior_log ={}
+            round_updated_comp = {}
+            for key in self._components_dictionary.keys():
+                prior_log ={}
+                prior_log[0] = self._components_dictionary[key].get_failure_probability()
+                comp_prior_log[key] = prior_log
+
+
+        rounds = min(len(self._tests_dictionary), self._max_tests_amount)
+
+        for key in self._tests_dictionary.keys():
+            tests_buffer[key] = self._tests_dictionary[key]
+        tests_by_information_gain = []
+        tests_IG = []
+        general_entropy = self.calculate_test_base_general_entropy(True)
+
+        for round in range(1, rounds + 1):
+            round_run_date = datetime.datetime.now()
+            current_best_information_gain = 100000
+            current_best_test = 0
+            selected_key = ''
+            for key in tests_buffer.keys():
+                test = tests_buffer[key]
+                #calculate_test_entropy = test.calculate_test_entropy(B)
+                calculate_test_entropy = operations.calculate_test_base_analytic_entropy(key,self._tests_dictionary,self._components_dictionary,B)
+                test_Ptf = test.calculate_test_failure_probability(B)
+                if debug==1:
+                    print('Test: ', key,' Ent:' ,calculate_test_entropy)
+
+                current_information_gain = general_entropy - calculate_test_entropy
+                #current_information_gain = calculate_test_entropy
+                if debug == 1:
+                    print('Test: ',key,' general_entropy: ',general_entropy,' information_gain: ',current_information_gain)
+                if current_information_gain < current_best_information_gain:
+                    current_best_information_gain = current_information_gain
+                    current_best_test = test
+                    selected_key = key
+                    current_best_test_Ptf = test_Ptf
+
+
+            #Actual run of the selected test with real test state outcome
+            if selected_key != '':
+                print('\nRound #: ' + str(round) + ' Selected Test: ' + str(selected_key) + ' outcome: ' + str(self._test_true_outcomes_dictionary[selected_key]))
+
+                # print(selected_key, current_best_test.get_components_failure_probability())
+
+                fail_found |= not self._test_true_outcomes_dictionary[selected_key]
+
+                t_outcome = 0 if self._test_true_outcomes_dictionary[selected_key] else 1
+
+                if t_outcome == 1:
+                    failed_tests_till_now = failed_tests_till_now + 1
+                #post_prob_test_run_dict = []
+
+                #if fail_found:
+                #if t_outcome == 1:
+                post_prob_test_run_dict =  operations.get_analytic_updates_priors(current_best_test, t_outcome,self._tests_dictionary, self._components_dictionary,B,current_best_test_Ptf)
+
+
+                if advance_log == 1:
+                    round_updated_comp[round] = post_prob_test_run_dict
+
+                tests_by_information_gain.append(current_best_test)
+                tests_IG.append(selected_key)
+
+
+                print(' -- General Entropy: ' + str(general_entropy))
+                print(' -- Best IG: ' + str(current_best_information_gain))
+                print(' -- Till now fail found: '+str(fail_found))
+                #print(' ---failed comp prob: ' + str(self._components_dictionary['org.apache.commons.math3.dfp.Dfp:multiply'].get_failure_probability()))
+                # print(selected_key, post_prob_test_run_dict)
+                perform_test_norm = 0
+                #if fail_found:
+                if perform_test_norm ==1:
+                    keys = []
+                    priors = []
+                    for key in post_prob_test_run_dict:
+                        keys.append(key)
+                        priors.append(post_prob_test_run_dict[key])
+
+                    priors_norms = operations.normilize(priors)
+                    for index in range(0, len(priors_norms)):
+                        post_prob_test_run_dict[keys[index]]=priors_norms[index]
+
+                self.update_components_dictionary(post_prob_test_run_dict,True)
+                if advance_log == 1:
+                    for key in self._components_dictionary.keys():
+                        prior_log[round] = self._components_dictionary[key].get_failure_probability()
+                        comp_prior_log[key][round] = prior_log[round]
+
+                tests_buffer.pop(selected_key)
+                print(" -- Selected tests till now: " + str(tests_IG))
+                #print(' ---failed comp prob: ' + str(
+                #    self._components_dictionary['org.apache.commons.math3.dfp.Dfp:multiply'].get_failure_probability()))
+                general_entropy_org = general_entropy
+                general_entropy = self.calculate_test_base_general_entropy(True)
+                failed_comp_prob_list ='['
+                for failed_comp in self._bugged_components_dict:
+                    failed_comp_prob_list = failed_comp_prob_list +  failed_comp + ':'+ str(self._components_dictionary[failed_comp].get_failure_probability())+'#'
+                failed_comp_prob_list = failed_comp_prob_list + ']'
+                test_result = str(test_run) + ',' + str(test_run_date) + ',' + str(round_run_date) + ',' + str(round) + ',' + str(
+                    t_outcome) + ',' + str(general_entropy_org) + ',' + 'TestBaseAnalyticInformationGain' + ',' + str(
+                    failed_tests_till_now) + ',' + str(selected_key) + ','+ str(general_entropy) + ',' + failed_comp_prob_list
+
+                data_extraction.write_test_result_data(report_file_path, test_result, '', False, debug)
+
+        if advance_log == 1:
+            log_file = report_file_path.replace('_result.txt','_comp_log.txt')
+            log_file = log_file.replace('generated_test_results', 'result_logs')
+            data_extraction.write_advance_log_result_data(log_file,comp_prior_log,1,debug)
+            log_file =log_file.replace('_comp_log.txt','_round_comp_log.txt')
+            data_extraction.write_advance_log_result_data(log_file, round_updated_comp, 2, debug)
+
+    def test_base_find_best_tests(self,report_file_path,test_run,test_run_date):
+
+        '''
+        main algorithm of the optimizer to find the best sub set that will yield the max bug count.
+        :return: void
+        '''
+        failed_tests_till_now = 0
+        fail_found = False
+        diagnoser_client = DiagnoserClient()
+        tests_buffer = {}
+        rounds = min(len(self._tests_dictionary), self._max_tests_amount)
+
+        for key in self._tests_dictionary.keys():
+            tests_buffer[key] = self._tests_dictionary[key]
+
+        tests_by_information_gain = []
+        tests_IG = []
+        general_entropy = self.calculate_test_base_general_entropy()
+
+        for round in range(1, rounds + 1):
+            round_run_date = datetime.datetime.now()
+            current_best_information_gain = 0
+            current_best_test = 0
+            selected_key = ''
+            for key in tests_buffer.keys():
+                test = tests_buffer[key]
+                current_information_gain = general_entropy - operations.calculate_test_base_diagnoser_entropy(test,self._tests_dictionary,self._components_dictionary,
+                                                                     tests_by_information_gain,self._test_true_outcomes_dictionary,
+                                                                     self._bugged_components_dict,
+                                                                     diagnoser_client)
+                #print('Test: ',key,' general_entropy: ',general_entropy,' information_gain: ',current_information_gain)
+                if current_information_gain > current_best_information_gain:
+                    current_best_information_gain = current_information_gain
+                    current_best_test = test
+                    selected_key = key
+
+
+            #Actual run of the selected test with real test state outcome
+            if selected_key!='':
+                print('\nRound #: ' + str(round) + ' Selected Test: ' + str(selected_key) + ' outcome: ' + str(self._test_true_outcomes_dictionary[selected_key]))
+
+                # print(selected_key, current_best_test.get_components_failure_probability())
+
+                fail_found |= not self._test_true_outcomes_dictionary[selected_key]
+
+
+                t_outcome = 0 if self._test_true_outcomes_dictionary[selected_key] else 1
+                if t_outcome == 1:
+                    failed_tests_till_now = failed_tests_till_now + 1
+                #t_outcome = 1
+
+                post_prob_test_run_dict = []
+
+                if fail_found:
+                    post_prob_test_run_dict =  diagnoser_client.get_updates_priors(current_best_test, t_outcome, tests_by_information_gain, self._test_true_outcomes_dictionary,
+                                                        self._bugged_components_dict, self._components_dictionary)
+                tests_by_information_gain.append(current_best_test)
+                tests_IG.append(selected_key)
+
+                print(' -- General Entropy: ' + str(general_entropy))
+                print(' -- Best IG: ' + str(current_best_information_gain))
+                print(' -- Till now fail found: '+str(fail_found))
+                # print(selected_key, post_prob_test_run_dict)
+                if fail_found:
+                    self.update_components_dictionary(post_prob_test_run_dict)
+
+                tests_buffer.pop(selected_key)
+                print(" -- Selected tests till now: " + str(tests_IG))
+                general_entropy_org = general_entropy
+                general_entropy = self.calculate_test_base_general_entropy()
+                failed_comp_prob_list = '['
+                for failed_comp in self._bugged_components_dict:
+                    failed_comp_prob_list = failed_comp_prob_list + failed_comp + ':' + str(self._components_dictionary[failed_comp].get_failure_probability()) + '#'
+                failed_comp_prob_list = failed_comp_prob_list+']'
+                test_result =  str(test_run) + ',' + str(test_run_date) + ','+str(round_run_date) +',' + str(round) + ',' + str(
+                    t_outcome) + ',' + str(general_entropy_org) + ',' + 'TestBaseDiagnoserInformationGain' + ',' + str(
+                    failed_tests_till_now) + ',' + str(selected_key) + ',' + str(general_entropy)+ ',' + failed_comp_prob_list
+
+                data_extraction.write_test_result_data(report_file_path, test_result, '', False, False)
 
 def main():
     '''data_extraction.generate_data_set_input_files('D:\ST\Thesis\LATEST\DataSet\Math_21.txt',
@@ -528,7 +761,7 @@ def main():
                 test_dict[test] = models.Test(test, test_comp_dict[test])
         # print(test,test_dict[test].get_failure_probability(),operations.calculate_failure_probability(test_dict[test]))
     #selection_algorithm =['Coverage','MaxFailureProbability','AnalyticInformationGain','DiagnoserInformationGain','MaxFailureProbabilityAnalyticGain','MaxFailureProbabilityDiagnoserGain']
-    selection_algorithm = ['AnalyticInformationGain','MaxFailureProbability']
+    selection_algorithm = ['MaxFailureProbability','MaxFailureProbabilityAnalyticGain','MaxFailureProbabilityDiagnoserGain','TestBaseAnalyticInformationGain','TestBaseDiagnoserInformationGain']
     data_folder = "generated_data_sets"
     result_folder ="generated_test_results"
     data_set_count = 5
@@ -539,7 +772,7 @@ def main():
 
     #return
 
-    test_result_header = 'test_run_id,test_run_date,round, failed_test_by_definition, base_entropy_apriory, algorithm, failed_till_now, chosen_test,round_entropy'
+    test_result_header = 'test_run_id,test_run_date,round_run_date,round, failed_test_by_definition, base_entropy_apriory, algorithm, failed_till_now, chosen_test,round_entropy'
     if include_faild_comp_prob==True:
         test_result_header = test_result_header +',failed_comp_probability'
 
@@ -619,13 +852,14 @@ def main():
                 failed_tests_till_now=0
                 covering_tests = operations.get_tests_for_max_covering(test_dict_filtered, max_tests_amount)
                 for round in range(1, len(covering_tests) + 1):
+                    round_run_date = datetime.datetime.now()
                     if covering_tests[round - 1] in test_outcomes_dict:
                         print('Round:', round, ' Test:', covering_tests[round - 1], test_outcomes_dict[covering_tests[round - 1]])
                         t_outcome = 0
                         if test_outcomes_dict[covering_tests[round - 1]]==0:
                             failed_tests_till_now=failed_tests_till_now+1
                             t_outcome = 1
-                        test_result = str(test_run) + ',' + str(test_run_date) + ',' + str(round) + ',' + str(
+                        test_result = str(test_run) + ',' + str(test_run_date) + ','+str(round_run_date) +',' +str(round) + ',' + str(
                             t_outcome) + ',' + '-' + ',' + 'Coverage' + ',' + str(
                             failed_tests_till_now) + ',' + str(covering_tests[round - 1]) + ',' + '-'+ ',' + '-'
                         data_extraction.write_test_result_data(file_to_write, test_result, '', False, False)
@@ -634,6 +868,7 @@ def main():
                 ignore_tests = []
                 failed_tests_till_now = 0
                 for round in range(1, max_tests_amount + 1):
+                    round_run_date = datetime.datetime.now()
                     test_tup = operations.get_test_with_max_failure_probability(test_dict_filtered, ignore_tests, test_outcomes_dict_filtered)
                     ignore_tests.append(test_tup[0])
                     if test_tup[0] in test_outcomes_dict_filtered:
@@ -642,7 +877,7 @@ def main():
                         if test_outcomes_dict_filtered[test_tup[0]] == 0:
                             failed_tests_till_now = failed_tests_till_now + 1
                             t_outcome = 1
-                        test_result = str(test_run) + ',' + str(test_run_date) + ',' + str(round) + ',' + str(
+                        test_result =  str(test_run) + ',' + str(test_run_date) + ','+str(round_run_date) +',' +str(round) + ',' + str(
                             t_outcome) + ',' + '-' + ',' + 'MaxFailureProbability' + ',' + str(
                             failed_tests_till_now) + ',' + test_tup[0] + ',' + '-'+ ',' + '-'
                         data_extraction.write_test_result_data(file_to_write, test_result, '', False, False)
@@ -663,6 +898,20 @@ def main():
             if algo_run =='MaxFailureProbabilityDiagnoserGain':
                 optimizer = Optimizer(comp_dict_filtered, test_outcomes_dict_filtered, test_dict_filtered, bugged_components_dict_filtered, max_tests_amount)
                 optimizer.DiagnoserMaxFailureProbability_find_best_tests(file_to_write,test_run,test_run_date)
+
+            if algo_run == 'TestBaseAnalyticInformationGain':
+                B = 0.1
+                optimizer = Optimizer(comp_dict_filtered, test_outcomes_dict_filtered, test_dict_filtered,
+                                      bugged_components_dict_filtered, max_tests_amount)
+                optimizer.analytic_test_base_find_best_tests(B, file_to_write, test_run, test_run_date)
+
+            if algo_run == 'TestBaseDiagnoserInformationGain':
+                optimizer = Optimizer(comp_dict_filtered, test_outcomes_dict_filtered, test_dict_filtered,
+                                      bugged_components_dict_filtered, max_tests_amount)
+                optimizer.test_base_find_best_tests(file_to_write, test_run, test_run_date)
+
+        dest_file_path = file_to_write.replace('.txt', '.csv')
+        data_extraction.remove_empty_lines(file_to_write, dest_file_path)
 
 
 if __name__ == "__main__":
